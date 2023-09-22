@@ -5,6 +5,7 @@ export interface User {
   familyName: string;
   email: string;
   linkedinId?: string;
+  googleId?: string;
 }
 
 export type RequestWithUser = Request & {

@@ -5,7 +5,12 @@ const ConfigurationSchema = z.object({
   linkedIn: z.object({
     clientId: z.string().nonempty(),
     clientSecret: z.string().nonempty(),
-    redirectUrl: z.string().nonempty(),
+    callbackUrl: z.string().nonempty(),
+  }),
+  google: z.object({
+    clientId: z.string().nonempty(),
+    clientSecret: z.string().nonempty(),
+    callbackUrl: z.string().nonempty(),
   }),
   jwt: z.object({
     tokenLifespan: z.string().nonempty(),
@@ -23,7 +28,12 @@ export const getConfiguration = () => {
     linkedIn: {
       clientId: process.env.LINKEDIN_CLIENT_ID as string,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
-      redirectUrl: process.env.LINKEDIN_CLIENT_REDIRECT_URL as string,
+      callbackUrl: process.env.LINKEDIN_CLIENT_CALLBACK_URL as string,
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      callbackUrl: process.env.GOOGLE_CLIENT_CALLBACK_URL as string,
     },
     jwt: {
       secret: process.env.JWT_SECRET as string,

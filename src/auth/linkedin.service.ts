@@ -33,7 +33,7 @@ export class LinkedinService {
     const url = new URL('https://www.linkedin.com/oauth/v2/authorization');
     url.searchParams.append('response_type', 'code');
     url.searchParams.append('client_id', linkedinConfig.clientId);
-    url.searchParams.append('redirect_uri', linkedinConfig.redirectUrl);
+    url.searchParams.append('redirect_uri', linkedinConfig.callbackUrl);
     url.searchParams.append('scope', 'email,openid,profile');
 
     return url;
@@ -51,7 +51,7 @@ export class LinkedinService {
         code,
         client_id: linkedinConfig.clientId,
         client_secret: linkedinConfig.clientSecret,
-        redirect_uri: linkedinConfig.redirectUrl,
+        redirect_uri: linkedinConfig.callbackUrl,
       }),
       {
         headers: {
