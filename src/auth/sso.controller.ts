@@ -1,13 +1,25 @@
-import { Body, Controller, Get, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 
-import { Login } from './auth.dto';
 import { LinkedinService } from './linkedin.service';
 import { LinkedinCallbackGuard } from './linkedin-callback.guard';
+import { SignInService } from './sign-in.service';
+import { type RequestWithUser } from 'src/user/user.dto';
 
 @Controller('sso')
 export class SsoController {
-  constructor(private readonly linkedinService: LinkedinService) {}
+  constructor(
+    private readonly linkedinService: LinkedinService,
+    private readonly signInService: SignInService,
+  ) {}
 
   @Get('linkedin')
   async linkedinLogin(@Res() response: Response): Promise<void | Response> {
@@ -16,23 +28,15 @@ export class SsoController {
     return response.redirect(url.toString());
   }
 
+  @HttpCode(HttpStatus.FOUND)
   @UseGuards(LinkedinCallbackGuard)
   @Get('/linkedin/callback')
   async linkedinCallback(
-    @Body() request: Login,
+    @Req() request: RequestWithUser,
     @Res() response: Response,
   ): Promise<void | Response> {
-    if (request.type === 'facebook') {
-      const url = this.linkedinService.getAuthorizationUrl();
+    const { url } = await this.signInService.signIn(request.user);
 
-      return response.redirect(url.toString());
-    }
-
-    return response
-      .status(400)
-      .json({
-        message: 'Unsupported login type',
-      })
-      .send();
+    return response.redirect(url);
   }
 }

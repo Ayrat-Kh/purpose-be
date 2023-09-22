@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { JwtModule } from '@nestjs/jwt';
 
 import { SsoController } from './sso.controller';
 import { LinkedinService } from './linkedin.service';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigurationService } from 'src/configuration/configuration.service';
+import { SignInService } from './sign-in.service';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { ConfigurationService } from 'src/configuration/configuration.service';
       },
     }),
   ],
-  providers: [LinkedinService],
+  providers: [LinkedinService, SignInService],
   controllers: [SsoController],
 })
 export class AuthModule {}

@@ -11,6 +11,7 @@ const ConfigurationSchema = z.object({
     tokenLifespan: z.string().nonempty(),
     secret: z.string().nonempty(),
   }),
+  frontendAuthCallback: z.string().nonempty(),
 });
 
 export type Configuration = TypeOf<typeof ConfigurationSchema>;
@@ -28,6 +29,7 @@ export const getConfiguration = () => {
       secret: process.env.JWT_SECRET as string,
       tokenLifespan: process.env.JWT_TOKEN_LIFESPAN as string,
     },
+    frontendAuthCallback: process.env.FRONTEND_AUTH_CALLBACK as string,
   };
 
   return ConfigurationSchema.parse(configuration);
