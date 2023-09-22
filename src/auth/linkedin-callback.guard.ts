@@ -1,7 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
-import { User } from 'src/user/user.dto';
 
+import { User } from 'src/user/user.dto';
 import { LinkedinService } from './linkedin.service';
 
 @Injectable()
@@ -16,7 +21,7 @@ export class LinkedinCallbackGuard implements CanActivate {
     const { code } = (request.query ?? {}) as { code: string };
 
     if (!code) {
-      return false;
+      throw new UnauthorizedException();
     }
 
     try {
@@ -31,7 +36,7 @@ export class LinkedinCallbackGuard implements CanActivate {
 
       return true;
     } catch (e) {
-      return false;
+      throw new UnauthorizedException();
     }
   }
 }
