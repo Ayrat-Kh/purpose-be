@@ -39,8 +39,6 @@ export class SsoController {
   ): Promise<void | Response> {
     const { url } = await this.signInService.signIn(request.user);
 
-    console.log('request', request);
-
     return response.redirect(url);
   }
 
