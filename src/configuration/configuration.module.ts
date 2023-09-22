@@ -1,4 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-@Module({})
+import { ConfigurationService } from './configuration.service';
+import { getConfiguration } from './configuration';
+
+@Global()
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [getConfiguration],
+    }),
+  ],
+  providers: [ConfigurationService],
+  exports: [ConfigurationService],
+})
 export class ConfigurationModule {}

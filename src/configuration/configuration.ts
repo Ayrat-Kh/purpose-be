@@ -13,7 +13,7 @@ const ConfigurationSchema = z.object({
   }),
 });
 
-type Configuration = TypeOf<typeof ConfigurationSchema>;
+export type Configuration = TypeOf<typeof ConfigurationSchema>;
 
 export class ConfigurationDto extends createZodDto(ConfigurationSchema) {}
 

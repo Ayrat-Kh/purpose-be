@@ -1,15 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 
 import { PingController } from './ping/ping.controller';
-import { getConfiguration } from './configuration/configuration';
+import { ConfigurationModule } from './configuration/configuration.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      load: [getConfiguration],
-    }),
-  ],
+  imports: [ConfigurationModule, AuthModule],
   controllers: [PingController],
 })
 export class AppModule {}
