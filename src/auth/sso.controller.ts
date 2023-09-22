@@ -22,6 +22,7 @@ export class SsoController {
     private readonly signInService: SignInService,
   ) {}
 
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('google'))
   @Get('google')
   async googleLogin(@Res() response: Response): Promise<void | Response> {
@@ -42,6 +43,7 @@ export class SsoController {
     return response.redirect(url);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Get('linkedin')
   async linkedinLogin(@Res() response: Response): Promise<void | Response> {
     const url = this.linkedinService.getAuthorizationUrl();
@@ -56,6 +58,25 @@ export class SsoController {
     @Req() request: RequestWithUser,
     @Res() response: Response,
   ): Promise<void | Response> {
+    const { url } = await this.signInService.signIn(request.user);
+
+    return response.redirect(url);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookLogin(): Promise<any> {
+    return HttpStatus.OK;
+  }
+
+  @HttpCode(HttpStatus.FOUND)
+  @Get('/facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookCallback(
+    @Req() request: RequestWithUser,
+    @Res() response: Response,
+  ): Promise<any> {
     const { url } = await this.signInService.signIn(request.user);
 
     return response.redirect(url);

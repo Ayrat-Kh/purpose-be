@@ -7,6 +7,7 @@ import { LinkedinService } from './linkedin.service';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 import { SignInService } from './sign-in.service';
 import { GoogleStrategy } from './google.strategy';
+import { FacebookStrategy } from './facebook.strategy';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { GoogleStrategy } from './google.strategy';
       },
     }),
   ],
-  providers: [LinkedinService, SignInService, GoogleStrategy],
+  providers: [LinkedinService, SignInService, GoogleStrategy, FacebookStrategy],
   controllers: [SsoController],
 })
 export class AuthModule {}

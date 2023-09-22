@@ -6,6 +6,7 @@ export interface User {
   email: string;
   linkedinId?: string;
   googleId?: string;
+  facebookId?: string;
 }
 
 export type RequestWithUser = Request & {

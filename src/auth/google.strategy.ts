@@ -28,7 +28,7 @@ export interface GoogleProfile {
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(private readonly configurationService: ConfigurationService) {
+  constructor(configurationService: ConfigurationService) {
     const google = configurationService.get('google');
 
     super({

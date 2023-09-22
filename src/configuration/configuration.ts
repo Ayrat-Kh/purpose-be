@@ -12,6 +12,11 @@ const ConfigurationSchema = z.object({
     clientSecret: z.string().nonempty(),
     callbackUrl: z.string().nonempty(),
   }),
+  facebook: z.object({
+    clientId: z.string().nonempty(),
+    clientSecret: z.string().nonempty(),
+    callbackUrl: z.string().nonempty(),
+  }),
   jwt: z.object({
     tokenLifespan: z.string().nonempty(),
     secret: z.string().nonempty(),
@@ -34,6 +39,11 @@ export const getConfiguration = () => {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       callbackUrl: process.env.GOOGLE_CLIENT_CALLBACK_URL as string,
+    },
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID as string,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
+      callbackUrl: process.env.FACEBOOK_CLIENT_CALLBACK_URL as string,
     },
     jwt: {
       secret: process.env.JWT_SECRET as string,
