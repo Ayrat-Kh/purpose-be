@@ -13,14 +13,14 @@ datasource db {
 model User {
   id               String        @id @default(uuid()) @db.Uuid
   createdAt        DateTime      @default(now())
-  email            String        @db.Char(50)
-  givenName        String        @db.Char(50)
-  familyName       String        @db.Char(50)
-  phoneNumber      String        @db.Char(20)
-  dreamDescription String        @db.Char(300)
-  linkedinId       String?       @unique(sort: Desc) @db.Char(30)
-  googleId         String?       @unique(sort: Desc) @db.Char(30)
-  facebookId       String?       @unique(sort: Desc) @db.Char(30)
+  email            String        @db.VarChar(50)
+  givenName        String        @db.VarChar(50)
+  familyName       String        @db.VarChar(50)
+  phoneNumber      String        @db.VarChar(20)
+  dreamDescription String        @db.VarChar(300)
+  linkedinId       String?       @unique(sort: Desc) @db.VarChar(30)
+  googleId         String?       @unique(sort: Desc) @db.VarChar(30)
+  facebookId       String?       @unique(sort: Desc) @db.VarChar(30)
   UserPrompts      UserPrompts[]
 
   @@index([linkedinId], type: Hash)
@@ -32,7 +32,7 @@ model User {
 model UserPrompts {
   id        String   @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
-  prompt    String   @db.Char(200)
+  prompt    String   @db.VarChar(200)
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @db.Uuid
 }

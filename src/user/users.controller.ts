@@ -16,8 +16,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { UserService } from './user.service';
 
-@Controller('user')
-export class UserController {
+@Controller('users')
+export class UsersController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(AuthGuard)

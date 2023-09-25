@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createZodDto } from '@anatine/zod-nestjs';
 import { type User } from '@prisma/client';
 import { type Request } from 'express';
+import { phoneRegex } from 'src/utils/phone-regex';
 
 export type AuthorizedUser = Pick<
   User,
@@ -30,7 +31,7 @@ export type AuthorizedRequest = Request & {
 const UpdateUserSchema = z.object({
   familyName: z.string().nonempty(),
   givenName: z.string().nonempty(),
-  phoneNumber: z.string().nonempty(),
+  phoneNumber: z.string().nonempty().regex(phoneRegex),
   dreamDescription: z.string().nonempty(),
 });
 

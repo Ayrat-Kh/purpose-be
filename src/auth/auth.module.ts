@@ -12,8 +12,8 @@ import { FacebookStrategy } from './facebook.strategy';
 
 @Module({
   imports: [
-    HttpModule,
     JwtModule.registerAsync({
+      global: true,
       inject: [ConfigurationService],
       useFactory(configService: ConfigurationService) {
         const jwt = configService.get('jwt');
@@ -25,6 +25,7 @@ import { FacebookStrategy } from './facebook.strategy';
         };
       },
     }),
+    HttpModule,
     UserModule,
   ],
   providers: [LinkedinService, SignInService, GoogleStrategy, FacebookStrategy],
