@@ -5,10 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { ConfigurationService } from 'src/configuration/configuration.service';
+import { type Request } from 'express';
 
-import { SocialUserLoginDto } from 'src/user/user.dto';
+import { ConfigurationService } from 'src/configuration/configuration.service';
+import { type AuthorizedUser } from 'src/user/user.dto';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,9 +18,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest() as Request & {
-      SocialUserLoginDto: SocialUserLoginDto;
-    };
+    const request = context.switchToHttp().getRequest() as Request;
 
     const token = this.extractTokenFromHeader(request);
     if (!token) {
@@ -32,9 +30,9 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = (await this.jwtService.verifyAsync(token, {
         secret,
-      })) as SocialUserLoginDto;
+      })) as AuthorizedUser;
 
-      request.SocialUserLoginDto = payload;
+      request.user = payload;
 
       return true;
     } catch (e) {

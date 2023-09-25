@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-google-oauth20';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
-import { type SocialUserLoginDto } from 'src/user/user.dto';
+import { type SocialUserLogin } from 'src/user/user.dto';
 
 export interface GoogleProfile {
   id: string;
@@ -45,11 +45,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: GoogleProfile,
   ): Promise<any> {
     const { name, emails, id } = profile;
-    const user: SocialUserLoginDto = {
+    const user: SocialUserLogin = {
       email: emails[0].value,
       familyName: name.familyName,
       givenName: name.givenName,
       googleId: id,
+      facebookId: null,
+      linkedinId: null,
     };
 
     return user;

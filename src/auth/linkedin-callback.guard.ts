@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { type RequestWithUser } from 'src/user/user.dto';
+import { type AuthorizeRequest } from 'src/user/user.dto';
 import { LinkedinService } from './linkedin.service';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class LinkedinCallbackGuard implements CanActivate {
   constructor(private readonly linkedinService: LinkedinService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest() as RequestWithUser;
+    const request = context.switchToHttp().getRequest() as AuthorizeRequest;
 
     const { code } = (request.query ?? {}) as { code: string };
 
@@ -29,6 +29,8 @@ export class LinkedinCallbackGuard implements CanActivate {
         familyName: res.family_name,
         email: res.email,
         linkedinId: res.sub,
+        facebookId: null,
+        googleId: null,
       };
 
       return true;
