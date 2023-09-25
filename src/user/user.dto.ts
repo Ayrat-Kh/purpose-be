@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-export interface User {
+export interface SocialUserLoginDto {
   givenName: string;
   familyName: string;
   email: string;
@@ -10,5 +10,5 @@ export interface User {
 }
 
 export type RequestWithUser = Request & {
-  user: User;
+  user: SocialUserLoginDto;
 };

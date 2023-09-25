@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "facebookId" DROP NOT NULL,
+ALTER COLUMN "googleId" DROP NOT NULL,
+ALTER COLUMN "linkedinId" DROP NOT NULL;

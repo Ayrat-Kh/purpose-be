@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { type Profile, Strategy } from 'passport-facebook';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
-import { User } from 'src/user/user.dto';
+import { type SocialUserLoginDto } from 'src/user/user.dto';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
@@ -25,7 +25,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     profile: Profile,
   ): Promise<any> {
     const { id, emails, name } = profile;
-    const user: User = {
+    const user: SocialUserLoginDto = {
       email: emails?.[0].value ?? '',
       familyName: name?.familyName ?? '',
       givenName: name?.givenName ?? '',

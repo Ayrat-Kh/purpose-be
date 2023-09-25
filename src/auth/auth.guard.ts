@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 
-import { User } from 'src/user/user.dto';
+import { SocialUserLoginDto } from 'src/user/user.dto';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest() as Request & {
-      user: User;
+      SocialUserLoginDto: SocialUserLoginDto;
     };
 
     const token = this.extractTokenFromHeader(request);
@@ -32,9 +32,9 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = (await this.jwtService.verifyAsync(token, {
         secret,
-      })) as User;
+      })) as SocialUserLoginDto;
 
-      request.user = payload;
+      request.SocialUserLoginDto = payload;
 
       return true;
     } catch (e) {

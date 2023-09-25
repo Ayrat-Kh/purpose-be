@@ -7,13 +7,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { type Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 import { LinkedinService } from './linkedin.service';
 import { LinkedinCallbackGuard } from './linkedin-callback.guard';
 import { SignInService } from './sign-in.service';
 import { type RequestWithUser } from 'src/user/user.dto';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('sso')
 export class SsoController {

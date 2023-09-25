@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
-import { User } from 'src/user/user.dto';
+import { type SocialUserLoginDto } from 'src/user/user.dto';
 
 @Injectable()
 export class SignInService {
@@ -11,7 +11,7 @@ export class SignInService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(user: User): Promise<{
+  async signIn(user: SocialUserLoginDto): Promise<{
     url: string;
     token: string;
   }> {

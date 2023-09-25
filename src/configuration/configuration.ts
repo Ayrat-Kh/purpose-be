@@ -22,6 +22,7 @@ const ConfigurationSchema = z.object({
     secret: z.string().nonempty(),
   }),
   frontendAuthCallback: z.string().nonempty(),
+  databaseUrl: z.string().nonempty(),
 });
 
 export type Configuration = TypeOf<typeof ConfigurationSchema>;
@@ -50,6 +51,7 @@ export const getConfiguration = () => {
       tokenLifespan: process.env.JWT_TOKEN_LIFESPAN as string,
     },
     frontendAuthCallback: process.env.FRONTEND_AUTH_CALLBACK as string,
+    databaseUrl: process.env.DATABASE_URL as string,
   };
 
   return ConfigurationSchema.parse(configuration);
