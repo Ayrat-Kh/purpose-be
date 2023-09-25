@@ -18,10 +18,15 @@ model User {
   familyName       String        @db.Char(50)
   phoneNumber      String        @db.Char(20)
   dreamDescription String        @db.Char(300)
-  linkedinId       String?       @db.Char(30)
-  googleId         String?       @db.Char(30)
-  facebookId       String?       @db.Char(30)
+  linkedinId       String?       @unique(sort: Desc) @db.Char(30)
+  googleId         String?       @unique(sort: Desc) @db.Char(30)
+  facebookId       String?       @unique(sort: Desc) @db.Char(30)
   UserPrompts      UserPrompts[]
+
+  @@index([linkedinId], type: Hash)
+  @@index([googleId], type: Hash)
+  @@index([facebookId], type: Hash)
+  @@index([email], type: Hash)
 }
 
 model UserPrompts {
