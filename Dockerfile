@@ -1,13 +1,30 @@
-FROM node:18
+FROM node:20-alpine AS development
+
+RUN npm i -g pnpm
+WORKDIR /app
+
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+RUN pnpm install
+
+COPY ./prisma/* ./prisma/
+COPY tsconfig*.json ./
+COPY ./src ./src
+
+RUN pnpm prisma generate
+RUN pnpm run build
+
+FROM development AS production
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY ./.env ./
+COPY ./prisma/* ./prisma/
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN pnpm install
 
-RUN npm install
+COPY --from=development /app/dist/ ./dist/
 
-COPY . .
-
-RUN npm run build
-
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "node", "dist/main.js" ]
