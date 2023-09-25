@@ -9,24 +9,34 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { type User } from '@prisma/client';
+import { ZodValidationPipe } from 'nestjs-zod';
+import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
 
-import { AuthorizedRequest, UpdateUserDto } from './user.dto';
+import { AuthorizedRequest, UpdateUserDto, UserResponseDto } from './user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { UserService } from './user.service';
 
+@UseGuards(AuthGuard)
+@ApiHeader({
+  name: 'Authorization',
+  description: 'Bearer xxx',
+})
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AuthGuard)
+  @ApiOkResponse({
+    type: UserResponseDto,
+  })
   @Get('me')
   async getMe(@Req() req: AuthorizedRequest): Promise<User | null> {
     return await this.userService.getUserById(req.user.id);
   }
 
-  @UseGuards(AuthGuard)
+  @ApiOkResponse({
+    type: UserResponseDto,
+  })
   @Get(':id')
   async getUser(@Param('id') id: string): Promise<User> {
     const user = await this.userService.getUserById(id);
@@ -45,8 +55,10 @@ export class UsersController {
     return user;
   }
 
+  @ApiOkResponse({
+    type: UserResponseDto,
+  })
   @UsePipes(ZodValidationPipe)
-  @UseGuards(AuthGuard)
   @Put(':id')
   async updateUser(
     @Param('id') id: string,

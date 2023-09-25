@@ -1,5 +1,5 @@
-import { createZodDto } from '@anatine/zod-nestjs';
-import { z, type TypeOf } from 'zod';
+import { createZodDto } from 'nestjs-zod';
+import { z, type TypeOf } from 'nestjs-zod/z';
 
 const ConfigurationSchema = z.object({
   linkedIn: z.object({

@@ -14,6 +14,12 @@ import { LinkedinService } from './linkedin.service';
 import { LinkedinCallbackGuard } from './linkedin-callback.guard';
 import { SignInService } from './sign-in.service';
 import { type AuthorizeRequest } from 'src/user/user.dto';
+import {
+  ApiFoundResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller('sso')
 export class SsoController {
@@ -22,6 +28,9 @@ export class SsoController {
     private readonly signInService: SignInService,
   ) {}
 
+  @ApiResponse({
+    description: 'Google Oauth',
+  })
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('google'))
   @Get('google')
@@ -31,6 +40,17 @@ export class SsoController {
     return response.redirect(url.toString());
   }
 
+  @ApiQuery({
+    name: 'code',
+    type: String,
+  })
+  @ApiOperation({
+    description: 'Google Oauth callback. Should not be used by clients',
+  })
+  @ApiFoundResponse({
+    description:
+      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
+  })
   @HttpCode(HttpStatus.FOUND)
   @UseGuards(AuthGuard('google'))
   @Get('/google/callback')
@@ -43,6 +63,9 @@ export class SsoController {
     return response.redirect(url);
   }
 
+  @ApiResponse({
+    description: 'Linkedin Oauth',
+  })
   @HttpCode(HttpStatus.OK)
   @Get('linkedin')
   async linkedinLogin(@Res() response: Response): Promise<void | Response> {
@@ -51,6 +74,17 @@ export class SsoController {
     return response.redirect(url.toString());
   }
 
+  @ApiQuery({
+    name: 'code',
+    type: String,
+  })
+  @ApiOperation({
+    description: 'Linkedin Oauth callback. Should not be used by clients',
+  })
+  @ApiFoundResponse({
+    description:
+      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
+  })
   @HttpCode(HttpStatus.FOUND)
   @UseGuards(LinkedinCallbackGuard)
   @Get('/linkedin/callback')
@@ -63,6 +97,9 @@ export class SsoController {
     return response.redirect(url);
   }
 
+  @ApiOperation({
+    description: 'Facebook Oauth',
+  })
   @HttpCode(HttpStatus.OK)
   @Get('facebook')
   @UseGuards(AuthGuard('facebook'))
@@ -70,6 +107,17 @@ export class SsoController {
     return HttpStatus.OK;
   }
 
+  @ApiQuery({
+    name: 'code',
+    type: String,
+  })
+  @ApiOperation({
+    description: 'Facebook Oauth callback. Should not be used by clients',
+  })
+  @ApiFoundResponse({
+    description:
+      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
+  })
   @HttpCode(HttpStatus.FOUND)
   @Get('/facebook/callback')
   @UseGuards(AuthGuard('facebook'))

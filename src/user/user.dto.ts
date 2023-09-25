@@ -1,9 +1,10 @@
-import { z } from 'zod';
+import { z } from 'nestjs-zod/z';
+import { createZodDto } from 'nestjs-zod';
 
-import { createZodDto } from '@anatine/zod-nestjs';
 import { type User } from '@prisma/client';
 import { type Request } from 'express';
 import { phoneRegex } from 'src/utils/phone-regex';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type AuthorizedUser = Pick<
   User,
@@ -29,10 +30,48 @@ export type AuthorizedRequest = Request & {
 };
 
 const UpdateUserSchema = z.object({
-  familyName: z.string().nonempty(),
-  givenName: z.string().nonempty(),
-  phoneNumber: z.string().nonempty().regex(phoneRegex),
+  familyName: z.string().nonempty().describe('First name'),
+  givenName: z.string().nonempty().describe('Last name'),
+  phoneNumber: z.string().nonempty().regex(phoneRegex).describe('Phone number'),
   dreamDescription: z.string().nonempty(),
 });
 
 export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}
+
+export class UserResponseDto implements User {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  givenName: string;
+
+  @ApiProperty()
+  familyName: string;
+
+  @ApiProperty()
+  phoneNumber: string;
+
+  @ApiProperty()
+  dreamDescription: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  linkedinId: string | null;
+
+  @ApiProperty({
+    type: String,
+  })
+  googleId: string | null;
+
+  @ApiProperty({
+    type: String,
+  })
+  facebookId: string | null;
+}
