@@ -18,14 +18,10 @@ model User {
   familyName       String        @db.VarChar(50)
   phoneNumber      String        @db.VarChar(20)
   dreamDescription String        @db.VarChar(300)
-  linkedinId       String?       @unique(sort: Desc) @db.VarChar(30)
-  googleId         String?       @unique(sort: Desc) @db.VarChar(30)
-  facebookId       String?       @unique(sort: Desc) @db.VarChar(30)
+  auth0Id          String?       @unique(sort: Desc) @db.VarChar(70)
   UserPrompts      UserPrompts[]
 
-  @@index([linkedinId], type: Hash)
-  @@index([googleId], type: Hash)
-  @@index([facebookId], type: Hash)
+  @@index([auth0Id], type: Hash)
   @@index([email], type: Hash)
 }
 

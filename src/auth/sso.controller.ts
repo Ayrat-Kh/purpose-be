@@ -7,126 +7,69 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { type Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+import { type Response, type Request } from 'express';
+import { ApiFoundResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
-import { LinkedinService } from './linkedin.service';
-import { LinkedinCallbackGuard } from './linkedin-callback.guard';
-import { SignInService } from './sign-in.service';
-import { type AuthorizeRequest } from 'src/user/user.dto';
-import {
-  ApiFoundResponse,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { UserService } from 'src/user/user.service';
+import { ConfigurationService } from 'src/configuration/configuration.service';
+import { Auth0Service } from './auth0.service';
+import { CODE_VERIFIER_KEY } from './auth.constants';
+import { Auth0CallbackGuard } from './auth0-callback.guard';
+import { AuthorizeRequest } from 'src/user/user.dto';
 
 @Controller('sso')
 export class SsoController {
   constructor(
-    private readonly linkedinService: LinkedinService,
-    private readonly signInService: SignInService,
+    private readonly auth0Service: Auth0Service,
+    private readonly configurationService: ConfigurationService,
+    private readonly userService: UserService,
   ) {}
 
-  @ApiResponse({
-    description: 'Google Oauth',
+  @ApiOperation({
+    description: 'auth0 start login',
   })
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('google'))
-  @Get('google')
-  async googleLogin(@Res() response: Response): Promise<void | Response> {
-    const url = this.linkedinService.getAuthorizationUrl();
+  @ApiFoundResponse({
+    description:
+      'Redirect to frontend then the success auth. Example: http://frontend.com?access_token=TOKEN',
+  })
+  @HttpCode(HttpStatus.FOUND)
+  @Get('/auth0')
+  async auth(@Res() response: Response) {
+    const { codeVerifier, url } = await this.auth0Service.getAuthUrl();
+
+    response.cookie(CODE_VERIFIER_KEY, codeVerifier, {
+      httpOnly: true,
+      signed: true,
+    });
+
+    return response.redirect(url);
+  }
+
+  @ApiQuery({
+    name: 'code',
+    type: String,
+  })
+  @ApiOperation({
+    description: 'auth0 callback. Should not be used by clients',
+  })
+  @ApiFoundResponse({
+    description:
+      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
+  })
+  @Get('/auth0/callback')
+  @HttpCode(HttpStatus.FOUND)
+  @UseGuards(Auth0CallbackGuard)
+  async auth0Callback(
+    @Req() request: AuthorizeRequest,
+    @Res() response: Response,
+  ) {
+    await this.userService.upsertUser(request.user);
+
+    response.clearCookie(CODE_VERIFIER_KEY);
+
+    const url = new URL(this.configurationService.get('frontendAuthCallback'));
+    url.searchParams.append('access_token', request.accessToken);
 
     return response.redirect(url.toString());
-  }
-
-  @ApiQuery({
-    name: 'code',
-    type: String,
-  })
-  @ApiOperation({
-    description: 'Google Oauth callback. Should not be used by clients',
-  })
-  @ApiFoundResponse({
-    description:
-      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
-  })
-  @HttpCode(HttpStatus.FOUND)
-  @UseGuards(AuthGuard('google'))
-  @Get('/google/callback')
-  async googleCallback(
-    @Req() request: AuthorizeRequest,
-    @Res() response: Response,
-  ): Promise<void | Response> {
-    const { url } = await this.signInService.signIn(request.user);
-
-    return response.redirect(url);
-  }
-
-  @ApiResponse({
-    description: 'Linkedin Oauth',
-  })
-  @HttpCode(HttpStatus.OK)
-  @Get('linkedin')
-  async linkedinLogin(@Res() response: Response): Promise<void | Response> {
-    const url = this.linkedinService.getAuthorizationUrl();
-
-    return response.redirect(url.toString());
-  }
-
-  @ApiQuery({
-    name: 'code',
-    type: String,
-  })
-  @ApiOperation({
-    description: 'Linkedin Oauth callback. Should not be used by clients',
-  })
-  @ApiFoundResponse({
-    description:
-      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
-  })
-  @HttpCode(HttpStatus.FOUND)
-  @UseGuards(LinkedinCallbackGuard)
-  @Get('/linkedin/callback')
-  async linkedinCallback(
-    @Req() request: AuthorizeRequest,
-    @Res() response: Response,
-  ): Promise<void | Response> {
-    const { url } = await this.signInService.signIn(request.user);
-
-    return response.redirect(url);
-  }
-
-  @ApiOperation({
-    description: 'Facebook Oauth',
-  })
-  @HttpCode(HttpStatus.OK)
-  @Get('facebook')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookLogin(): Promise<any> {
-    return HttpStatus.OK;
-  }
-
-  @ApiQuery({
-    name: 'code',
-    type: String,
-  })
-  @ApiOperation({
-    description: 'Facebook Oauth callback. Should not be used by clients',
-  })
-  @ApiFoundResponse({
-    description:
-      'Redirect to frontend after the success auth. Example: http://frontend.com?access_token=TOKEN',
-  })
-  @HttpCode(HttpStatus.FOUND)
-  @Get('/facebook/callback')
-  @UseGuards(AuthGuard('facebook'))
-  async facebookCallback(
-    @Req() request: AuthorizeRequest,
-    @Res() response: Response,
-  ): Promise<any> {
-    const { url } = await this.signInService.signIn(request.user);
-
-    return response.redirect(url);
   }
 }

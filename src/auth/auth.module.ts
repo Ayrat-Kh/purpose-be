@@ -1,34 +1,25 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
-import { ConfigurationService } from 'src/configuration/configuration.service';
 import { UserModule } from 'src/user/user.module';
 import { SsoController } from './sso.controller';
-import { LinkedinService } from './linkedin.service';
-import { SignInService } from './sign-in.service';
-import { GoogleStrategy } from './google.strategy';
-import { FacebookStrategy } from './facebook.strategy';
+import { AuthStrategy } from './auth.strategy';
+import { Auth0Service } from './auth0.service';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      global: true,
-      inject: [ConfigurationService],
-      useFactory(configService: ConfigurationService) {
-        const jwt = configService.get('jwt');
-
+    PassportModule.registerAsync({
+      useFactory() {
         return {
-          global: true,
-          secret: jwt.secret,
-          signOptions: { expiresIn: jwt.tokenLifespan },
+          defaultStrategy: 'jwt',
         };
       },
     }),
     HttpModule,
     UserModule,
   ],
-  providers: [LinkedinService, SignInService, GoogleStrategy, FacebookStrategy],
+  providers: [AuthStrategy, Auth0Service],
   controllers: [SsoController],
 })
 export class AuthModule {}

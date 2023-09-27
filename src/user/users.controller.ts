@@ -12,12 +12,12 @@ import {
 import { type User } from '@prisma/client';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { AuthorizedRequest, UpdateUserDto, UserResponseDto } from './user.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { UserService } from './user.service';
 
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard('jwt'))
 @ApiHeader({
   name: 'Authorization',
   description: 'Bearer xxx',

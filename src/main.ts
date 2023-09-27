@@ -1,14 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { patchNestJsSwagger } from 'nestjs-zod';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigurationService } from './configuration/configuration.service';
 
 patchNestJsSwagger();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Purpose API example')
     .setDescription('Purpose API description')
@@ -20,6 +22,9 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
 
+  app.use(
+    cookieParser(app.get(ConfigurationService).get('auth0').cookieSignKey),
+  );
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

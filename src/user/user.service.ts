@@ -22,9 +22,7 @@ export class UserService {
         givenName: user.givenName,
         phoneNumber: '',
         familyName: user.familyName,
-        facebookId: user.facebookId,
-        googleId: user.googleId,
-        linkedinId: user.linkedinId,
+        auth0Id: user.auth0Id,
       },
     });
   }
@@ -41,36 +39,13 @@ export class UserService {
   }
 
   async getUserBySocialId({
-    facebookId,
-    googleId,
-    linkedinId,
-  }: Pick<
-    SocialUserLogin,
-    'facebookId' | 'googleId' | 'linkedinId'
-  >): Promise<User | null> {
+    auth0Id,
+  }: Pick<SocialUserLogin, 'auth0Id'>): Promise<User | null> {
     const result = await this.dbClient.user.findFirst({
       where: {
-        ...(facebookId
-          ? {
-              facebookId: {
-                equals: facebookId,
-              },
-            }
-          : {}),
-        ...(googleId
-          ? {
-              googleId: {
-                equals: googleId,
-              },
-            }
-          : {}),
-        ...(linkedinId
-          ? {
-              facebookId: {
-                equals: linkedinId,
-              },
-            }
-          : {}),
+        auth0Id: {
+          equals: auth0Id,
+        },
       },
     });
 

@@ -13,16 +13,12 @@ export type AuthorizedUser = Pick<
 
 export type SocialUserLogin = Pick<
   User,
-  | 'email'
-  | 'linkedinId'
-  | 'googleId'
-  | 'facebookId'
-  | 'familyName'
-  | 'givenName'
+  'email' | 'auth0Id' | 'familyName' | 'givenName'
 >;
 
 export type AuthorizeRequest = Request & {
   user: SocialUserLogin;
+  accessToken: string;
 };
 
 export type AuthorizedRequest = Request & {
@@ -63,15 +59,5 @@ export class UserResponseDto implements User {
   @ApiProperty({
     type: String,
   })
-  linkedinId: string | null;
-
-  @ApiProperty({
-    type: String,
-  })
-  googleId: string | null;
-
-  @ApiProperty({
-    type: String,
-  })
-  facebookId: string | null;
+  auth0Id: string | null;
 }
