@@ -19,7 +19,7 @@ FROM development AS production
 
 WORKDIR /app
 
-COPY ./.env ./
+#COPY ./.env ./
 COPY ./prisma/* ./prisma/
 COPY package.json ./
 COPY pnpm-lock.yaml ./
