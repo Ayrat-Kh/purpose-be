@@ -10,17 +10,19 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
   constructor(readonly configurationService: ConfigurationService) {
     const { audience, issuerUrl } = configurationService.get('auth0');
 
+    const jwksUri = `${issuerUrl}/.well-known/jwks.json`;
+
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `${issuerUrl}/.well-known/jwks.json`,
+        jwksUri,
       }),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       algorithms: ['RS256'],
-      issuer: `${issuerUrl}`,
-      // audience,
+      issuer: `${issuerUrl}/`, // / - is important
+      audience,
     });
   }
 

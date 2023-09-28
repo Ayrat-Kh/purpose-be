@@ -22,12 +22,13 @@ export class Auth0Service {
 
     const codeVerifier = generators.codeVerifier();
 
-    const url = `https://${issuerUrl}/authorize?${stringify({
+    const url = `${issuerUrl}/authorize?${stringify({
       response_type: 'code',
       client_id: clientId,
       code_challenge: generators.codeChallenge(codeVerifier),
       code_challenge_method: 'S256',
       redirect_uri: callbackUrl,
+      audience,
       scope: 'profile email openid ',
     })}
     `;
@@ -56,7 +57,7 @@ export class Auth0Service {
         expires_in: number;
         token_type: string;
       }>(
-        `https://${issuerUrl}/oauth/token`,
+        `${issuerUrl}/oauth/token`,
         stringify({
           grant_type: 'authorization_code',
           client_id: clientId,
