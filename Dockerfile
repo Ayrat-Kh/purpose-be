@@ -22,6 +22,8 @@ WORKDIR /app
 #COPY ./.env ./
 COPY ./prisma/* ./prisma/
 COPY package.json ./
+COPY start.sh ./
+RUN chmod +x /app/start.sh
 COPY pnpm-lock.yaml ./
 RUN pnpm install
 
@@ -29,4 +31,4 @@ COPY --from=development /app/dist/ ./dist/
 
 EXPOSE 3000
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "./start.sh" ]
