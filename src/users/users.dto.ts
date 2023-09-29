@@ -13,7 +13,7 @@ export type AuthorizedUser = Pick<
 
 export type SocialUserLogin = Pick<
   User,
-  'email' | 'auth0Id' | 'familyName' | 'givenName'
+  'email' | 'id' | 'familyName' | 'givenName'
 >;
 
 export type AuthorizeRequest = Request & {

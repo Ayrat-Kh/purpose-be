@@ -7,42 +7,12 @@ import { type JwtHeader, type SigningKeyCallback, verify } from 'jsonwebtoken';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 import { type SocialUserLogin } from 'src/users/users.dto';
 import { Auth0JwtTokenVerifier } from 'src/providers/auth0-jwt-token-verifier';
-
-interface AccessTokenPayload {
-  iss: string;
-  sub: string;
-  aud: string[];
-  iat: number;
-  exp: number;
-  azp: string;
-  scope: string;
-}
-
-interface ExchangeTokenResponse {
-  access_token: string;
-  id_token: string;
-  scope: string;
-  expires_in: number;
-  token_type: string;
-}
-
-interface IdTokenResponse {
-  given_name: string;
-  family_name: string;
-  nickname: string;
-  name: string;
-  picture: string;
-  locale: string;
-  updated_at: string;
-  email: string;
-  email_verified: boolean;
-  iss: string;
-  aud: string;
-  iat: number;
-  exp: number;
-  sub: string;
-  sid: string;
-}
+import { normalizeIssuerUrl } from './auth.utils';
+import {
+  AccessTokenPayload,
+  ExchangeTokenResponse,
+  IdTokenResponse,
+} from './auth.dto';
 
 @Injectable()
 export class Auth0Service {
@@ -115,8 +85,9 @@ export class Auth0Service {
       });
 
       const audiences = Array.isArray(aud) ? aud : [aud];
+      const normalizedIssuerUrl = normalizeIssuerUrl(issuerUrl);
 
-      if (iss !== `${issuerUrl}/` || !audiences.includes(audience)) {
+      if (iss !== normalizedIssuerUrl || !audiences.includes(audience)) {
         throw new UnauthorizedException({
           message: 'Invalid token',
         });
@@ -130,7 +101,7 @@ export class Auth0Service {
 
       return {
         user: {
-          auth0Id: user.sub,
+          id: user.sub,
           email: user.email,
           familyName: user.family_name,
           givenName: user.given_name,

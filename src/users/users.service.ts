@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private readonly dbClient: DbClient) {}
 
   async upsertUser(user: SocialUserLogin): Promise<User> {
-    const dbUser = await this.getUserBySocialId(user);
+    const dbUser = await this.getUserById(user.id);
 
     if (dbUser) {
       return dbUser;
@@ -22,7 +22,7 @@ export class UsersService {
         givenName: user.givenName,
         phoneNumber: '',
         familyName: user.familyName,
-        auth0Id: user.auth0Id,
+        id: user.id,
       },
     });
   }
@@ -32,20 +32,6 @@ export class UsersService {
       data: user,
       where: {
         id,
-      },
-    });
-
-    return result;
-  }
-
-  async getUserBySocialId({
-    auth0Id,
-  }: Pick<SocialUserLogin, 'auth0Id'>): Promise<User | null> {
-    const result = await this.dbClient.user.findFirst({
-      where: {
-        auth0Id: {
-          equals: auth0Id,
-        },
       },
     });
 

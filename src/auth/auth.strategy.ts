@@ -4,10 +4,16 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
+import { Auth0JwtTokenVerifier } from 'src/providers/auth0-jwt-token-verifier';
+import { normalizeIssuerUrl } from './auth.utils';
+import { AccessTokenPayload } from './auth.dto';
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy) {
-  constructor(readonly configurationService: ConfigurationService) {
+  constructor(
+    readonly configurationService: ConfigurationService,
+    private readonly auth0JwtTokenVerifier: Auth0JwtTokenVerifier,
+  ) {
     const { audience, issuerUrl } = configurationService.get('auth0');
 
     const jwksUri = `${issuerUrl}/.well-known/jwks.json`;
@@ -21,13 +27,13 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
       }),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       algorithms: ['RS256'],
-      issuer: `${issuerUrl}/`, // / - is important
+      issuer: normalizeIssuerUrl(issuerUrl),
       audience,
     });
   }
 
-  validate(payload: unknown): unknown {
-    console.log('payload');
+  validate(payload: AccessTokenPayload): unknown {
+    console.log('payload', payload);
 
     return payload;
   }
