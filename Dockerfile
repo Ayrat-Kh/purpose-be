@@ -20,7 +20,7 @@ FROM development AS production
 WORKDIR /app
 
 #COPY ./.env ./
-COPY ./prisma/* ./prisma/
+COPY ./prisma/ ./prisma/
 COPY package.json ./
 COPY start.sh ./
 RUN chmod +x /app/start.sh
