@@ -4,7 +4,7 @@ import { generators } from 'openid-client';
 import { stringify } from 'querystring';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
-import { SocialUserLogin } from 'src/user/user.dto';
+import { type SocialUserLogin } from 'src/users/users.dto';
 
 @Injectable()
 export class Auth0Service {

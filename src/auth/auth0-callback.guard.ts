@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { Auth0Service } from './auth0.service';
-import { AuthorizeRequest } from 'src/user/user.dto';
+import { type AuthorizeRequest } from 'src/users/users.dto';
 import { CODE_VERIFIER_KEY } from './auth.constants';
 
 @Injectable()

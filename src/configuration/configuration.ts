@@ -7,10 +7,11 @@ const ConfigurationSchema = z.object({
     audience: z.string().nonempty(),
     callbackUrl: z.string().nonempty(),
     clientId: z.string().nonempty(),
-    cookieSignKey: z.string(), // .instanceof(Uint8Array),
+    cookieSignKey: z.string(),
   }),
   frontendAuthCallback: z.string().nonempty(),
   databaseUrl: z.string().nonempty(),
+  openAiApiKey: z.string().optional(),
 });
 
 export type Configuration = TypeOf<typeof ConfigurationSchema>;
@@ -30,6 +31,7 @@ export const getConfiguration = async (): Promise<Configuration> => {
     },
     frontendAuthCallback: process.env.FRONTEND_AUTH_CALLBACK as string,
     databaseUrl: process.env.DATABASE_URL as string,
+    openAiApiKey: process.env.OPENAI_API_KEY as string,
   };
 
   return ConfigurationSchema.parse(configuration);

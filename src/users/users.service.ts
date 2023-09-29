@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 
 import { DbClient } from 'src/providers/db-client';
-import { type SocialUserLogin, type UpdateUserDto } from './user.dto';
+import { type SocialUserLogin, type UpdateUserDto } from './users.dto';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(private readonly dbClient: DbClient) {}
 
   async upsertUser(user: SocialUserLogin): Promise<User> {

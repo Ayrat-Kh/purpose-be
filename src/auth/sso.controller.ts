@@ -7,22 +7,22 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { type Response, type Request } from 'express';
+import { type Response } from 'express';
 import { ApiFoundResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
-import { UserService } from 'src/user/user.service';
+import { UsersService } from 'src/users/users.service';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 import { Auth0Service } from './auth0.service';
 import { CODE_VERIFIER_KEY } from './auth.constants';
 import { Auth0CallbackGuard } from './auth0-callback.guard';
-import { AuthorizeRequest } from 'src/user/user.dto';
+import { type AuthorizeRequest } from 'src/users/users.dto';
 
 @Controller('sso')
 export class SsoController {
   constructor(
     private readonly auth0Service: Auth0Service,
     private readonly configurationService: ConfigurationService,
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
   ) {}
 
   @ApiOperation({
@@ -63,7 +63,7 @@ export class SsoController {
     @Req() request: AuthorizeRequest,
     @Res() response: Response,
   ) {
-    await this.userService.upsertUser(request.user);
+    await this.usersService.upsertUser(request.user);
 
     response.clearCookie(CODE_VERIFIER_KEY);
 

@@ -14,8 +14,12 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-import { AuthorizedRequest, UpdateUserDto, UserResponseDto } from './user.dto';
-import { UserService } from './user.service';
+import {
+  type AuthorizedRequest,
+  UpdateUserDto,
+  UserResponseDto,
+} from './users.dto';
+import { UsersService } from './users.service';
 
 @UseGuards(AuthGuard('jwt'))
 @ApiHeader({
@@ -24,7 +28,7 @@ import { UserService } from './user.service';
 })
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @ApiOkResponse({
     type: UserResponseDto,

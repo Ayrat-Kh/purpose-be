@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { PassportModule } from '@nestjs/passport';
 
-import { UserModule } from 'src/user/user.module';
+import { UsersModule } from 'src/users/users.module';
 import { SsoController } from './sso.controller';
 import { AuthStrategy } from './auth.strategy';
 import { Auth0Service } from './auth0.service';
@@ -17,7 +17,7 @@ import { Auth0Service } from './auth0.service';
       },
     }),
     HttpModule,
-    UserModule,
+    UsersModule,
   ],
   providers: [AuthStrategy, Auth0Service],
   controllers: [SsoController],
