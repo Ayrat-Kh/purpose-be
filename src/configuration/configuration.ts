@@ -19,8 +19,6 @@ export type Configuration = TypeOf<typeof ConfigurationSchema>;
 export class ConfigurationDto extends createZodDto(ConfigurationSchema) {}
 
 export const getConfiguration = async (): Promise<Configuration> => {
-  console.log(`process.env.AUTH0_AUDIENCE |${process.env.AUTH0_AUDIENCE}|`);
-
   const configuration: Configuration = {
     auth0: {
       issuerUrl: process.env.AUTH0_ISSUER_URL as string,

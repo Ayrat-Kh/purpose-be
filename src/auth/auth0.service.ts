@@ -2,16 +2,57 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { generators } from 'openid-client';
 import { stringify } from 'querystring';
+import { type JwtHeader, type SigningKeyCallback, verify } from 'jsonwebtoken';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
 import { type SocialUserLogin } from 'src/users/users.dto';
+import { Auth0JwtTokenVerifier } from 'src/providers/auth0-jwt-token-verifier';
+
+interface AccessTokenPayload {
+  iss: string;
+  sub: string;
+  aud: string[];
+  iat: number;
+  exp: number;
+  azp: string;
+  scope: string;
+}
+
+interface ExchangeTokenResponse {
+  access_token: string;
+  id_token: string;
+  scope: string;
+  expires_in: number;
+  token_type: string;
+}
+
+interface IdTokenResponse {
+  given_name: string;
+  family_name: string;
+  nickname: string;
+  name: string;
+  picture: string;
+  locale: string;
+  updated_at: string;
+  email: string;
+  email_verified: boolean;
+  iss: string;
+  aud: string;
+  iat: number;
+  exp: number;
+  sub: string;
+  sid: string;
+}
 
 @Injectable()
 export class Auth0Service {
   constructor(
     private readonly configurationService: ConfigurationService,
     private readonly httpClient: HttpService,
-  ) {}
+    private readonly auth0JwtTokenVerifier: Auth0JwtTokenVerifier,
+  ) {
+    this.getKey = this.getKey.bind(this);
+  }
 
   async getAuthUrl(): Promise<{
     codeVerifier: string;
@@ -46,35 +87,46 @@ export class Auth0Service {
     user: SocialUserLogin;
     accessToken: string;
   }> {
-    const { issuerUrl, callbackUrl, clientId } =
+    const { issuerUrl, callbackUrl, clientId, audience } =
       this.configurationService.get('auth0');
 
     try {
-      const { data } = await this.httpClient.axiosRef.post<{
-        access_token: string;
-        id_token: string;
-        scope: string;
-        expires_in: number;
-        token_type: string;
-      }>(
-        `${issuerUrl}/oauth/token`,
-        stringify({
-          grant_type: 'authorization_code',
-          client_id: clientId,
-          ...(codeVerifier ? { code_verifier: codeVerifier } : {}),
-          code,
-          redirect_uri: callbackUrl,
-        }),
-        {
-          headers: {
-            'content-type': 'application/x-www-form-urlencoded',
+      const { data } =
+        await this.httpClient.axiosRef.post<ExchangeTokenResponse>(
+          `${issuerUrl}/oauth/token`,
+          stringify({
+            grant_type: 'authorization_code',
+            client_id: clientId,
+            ...(codeVerifier ? { code_verifier: codeVerifier } : {}),
+            code,
+            redirect_uri: callbackUrl,
+          }),
+          {
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+            },
           },
-        },
-      );
+        );
 
-      const user = JSON.parse(
-        Buffer.from(data.id_token.split('.')[1], 'base64').toString(),
-      );
+      const { iss, aud } = await new Promise<AccessTokenPayload>((resolve) => {
+        verify(data.access_token, this.getKey, function (_err, decoded) {
+          resolve(decoded as AccessTokenPayload);
+        });
+      });
+
+      const audiences = Array.isArray(aud) ? aud : [aud];
+
+      if (iss !== `${issuerUrl}/` || !audiences.includes(audience)) {
+        throw new UnauthorizedException({
+          message: 'Invalid token',
+        });
+      }
+
+      const user = await new Promise<IdTokenResponse>((resolve) => {
+        verify(data.id_token, this.getKey, function (_err, decoded) {
+          resolve(decoded as IdTokenResponse);
+        });
+      });
 
       return {
         user: {
@@ -90,5 +142,12 @@ export class Auth0Service {
         message: 'Invalid token',
       });
     }
+  }
+
+  getKey(header: JwtHeader, callback: SigningKeyCallback) {
+    this.auth0JwtTokenVerifier.getSigningKey(header.kid, function (_err, key) {
+      const signingKey = key?.getPublicKey();
+      callback(null, signingKey);
+    });
   }
 }

@@ -4,12 +4,12 @@ import { OpenAI } from 'openai';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 
 @Injectable()
-export class OpenAiClient {
+export class OpenAiClient extends OpenAI {
   openAi: OpenAI;
 
-  constructor(private readonly configuration: ConfigurationService) {
-    this.openAi = new OpenAI({
-      apiKey: this.configuration.get('openAiApiKey'),
+  constructor(readonly configuration: ConfigurationService) {
+    super({
+      apiKey: configuration.get('openAiApiKey'),
     });
   }
 }
