@@ -8,7 +8,7 @@ COPY pnpm-lock.yaml ./
 
 RUN pnpm install
 
-COPY ./prisma/* ./prisma/
+COPY ./prisma/ ./prisma/
 COPY tsconfig*.json ./
 COPY ./src ./src
 
