@@ -33,3 +33,7 @@ export interface IdTokenResponse {
   sub: string;
   sid: string;
 }
+
+export type AuthorizedRequest = Request & {
+  user: AccessTokenPayload;
+};

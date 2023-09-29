@@ -14,12 +14,9 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-import {
-  type AuthorizedRequest,
-  UpdateUserDto,
-  UserResponseDto,
-} from './users.dto';
+import { UpdateUserDto, UserResponseDto } from './users.dto';
 import { UsersService } from './users.service';
+import { AuthorizedRequest } from 'src/auth/auth.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @ApiHeader({
@@ -35,7 +32,7 @@ export class UsersController {
   })
   @Get('me')
   async getMe(@Req() req: AuthorizedRequest): Promise<User | null> {
-    return await this.userService.getUserById(req.user.id);
+    return await this.userService.getUserById(req.user.sub);
   }
 
   @ApiOkResponse({

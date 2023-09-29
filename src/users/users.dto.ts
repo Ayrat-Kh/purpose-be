@@ -21,10 +21,6 @@ export type AuthorizeRequest = Request & {
   accessToken: string;
 };
 
-export type AuthorizedRequest = Request & {
-  user: AuthorizedUser;
-};
-
 const UpdateUserSchema = z.object({
   familyName: z.string().nonempty().describe('First name'),
   givenName: z.string().nonempty().describe('Last name'),

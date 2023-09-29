@@ -32,9 +32,7 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: AccessTokenPayload): unknown {
-    console.log('payload', payload);
-
+  validate(payload: AccessTokenPayload): AccessTokenPayload {
     return payload;
   }
 }
