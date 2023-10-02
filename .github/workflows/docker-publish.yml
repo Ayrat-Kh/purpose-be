@@ -43,4 +43,4 @@ jobs:
         with:
           push: true
           tags: |
-          us-central1-docker.pkg.dev/primeval-proton-400205/purpose-local/purpose-be/purpose-be:${{ steps.get-tag.outputs.short_ref }}
+            us-central1-docker.pkg.dev/primeval-proton-400205/purpose-local/purpose-be/purpose-be:${{ steps.get-tag.outputs.short_ref }}
