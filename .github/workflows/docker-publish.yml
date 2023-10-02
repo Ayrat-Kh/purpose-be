@@ -1,7 +1,14 @@
 name: Release
 on:
-  push:
-
+  #  schedule:
+  #    - cron: '34 17 * * *'
+    push:
+      branches: [ "main", "dev" ]
+      # Publish semver tags as releases.
+      tags: [ 'v*.*.*' ]
+    pull_request:
+      branches: [ "main", "dev" ]
+      
 jobs:
   docker-release:
     name: Tagged Docker release to Google Artifact Registry
@@ -44,3 +51,11 @@ jobs:
           push: true
           tags: |
             us-central1-docker.pkg.dev/primeval-proton-400205/purpose-local/purpose-be/purpose-be:${{ steps.get-tag.outputs.short_ref }}
+
+
+
+
+
+
+
+
