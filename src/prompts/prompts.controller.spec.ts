@@ -38,4 +38,14 @@ describe('PromptsController', () => {
       controller.prompt({ content: 'content' }, mock<AuthorizedRequest>()),
     ).resolves.toEqual(response);
   });
+
+  it('should return list prompts', async () => {
+    const response = mock<UserPromptDto>();
+
+    promptsService.getUserPrompts.mockResolvedValue([response]);
+
+    await expect(
+      controller.getUserPrompts(mock<AuthorizedRequest>()),
+    ).resolves.toEqual([response]);
+  });
 });
