@@ -60,6 +60,7 @@ export class SsoController {
   })
   @Get('/auth0/callback')
   @HttpCode(HttpStatus.FOUND)
+  @Public()
   @UseGuards(Auth0CallbackGuard)
   async auth0Callback(
     @Req() request: AuthorizeRequest,

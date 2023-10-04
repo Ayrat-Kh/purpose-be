@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "UserPrompts" ALTER COLUMN "prompt" SET DATA TYPE VARCHAR(4000);
