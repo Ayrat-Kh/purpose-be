@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { patchNestJsSwagger } from 'nestjs-zod';
 import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigurationService } from './configuration/configuration.service';
 
 patchNestJsSwagger();
@@ -25,6 +25,7 @@ async function bootstrap() {
   app.use(
     cookieParser(app.get(ConfigurationService).get('auth0').cookieSignKey),
   );
+
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

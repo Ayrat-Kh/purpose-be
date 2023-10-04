@@ -6,19 +6,16 @@ import {
   Param,
   Put,
   Req,
-  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { type User } from '@prisma/client';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 
 import { UpdateUserDto, UserResponseDto } from './users.dto';
 import { UsersService } from './users.service';
-import { AuthorizedRequest } from 'src/auth/auth.dto';
+import { type AuthorizedRequest } from 'src/auth/auth.dto';
 
-@UseGuards(AuthGuard('jwt'))
 @ApiHeader({
   name: 'Authorization',
   description: 'Bearer xxx',

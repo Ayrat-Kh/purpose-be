@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiProperty } from '@nestjs/swagger';
 
+import { Public } from 'src/auth/auth.public.decorator';
+
 class PongResponse {
   @ApiProperty({
     type: String,
@@ -10,6 +12,7 @@ class PongResponse {
 
 @Controller('/ping')
 export class PingController {
+  @Public()
   @ApiOkResponse({
     status: 200,
     description: 'Health check',

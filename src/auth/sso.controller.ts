@@ -16,6 +16,7 @@ import { Auth0Service } from './auth0.service';
 import { CODE_VERIFIER_KEY } from './auth.constants';
 import { Auth0CallbackGuard } from './auth0-callback.guard';
 import { type AuthorizeRequest } from 'src/users/users.dto';
+import { Public } from './auth.public.decorator';
 
 @Controller('sso')
 export class SsoController {
@@ -34,6 +35,7 @@ export class SsoController {
   })
   @HttpCode(HttpStatus.FOUND)
   @Get('/auth0')
+  @Public()
   async auth(@Res() response: Response) {
     const { codeVerifier, url } = await this.auth0Service.getAuthUrl();
 

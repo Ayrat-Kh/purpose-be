@@ -6,22 +6,19 @@ import {
   HttpStatus,
   Post,
   Req,
-  UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiBody, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { CreatePromptDto, UserPromptDto } from './prompts.dto';
 import { PromptsService } from './prompts.service';
-import { AuthorizedRequest } from 'src/auth/auth.dto';
+import { type AuthorizedRequest } from 'src/auth/auth.dto';
 
 @ApiHeader({
   name: 'Authorization',
   description: 'Bearer xxx',
 })
-@UseGuards(AuthGuard('jwt'))
 @Controller('prompts')
 export class PromptsController {
   constructor(private readonly promptsService: PromptsService) {}
