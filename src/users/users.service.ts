@@ -19,9 +19,9 @@ export class UsersService {
       data: {
         dreamDescription: '',
         email: user.email,
-        givenName: user.givenName,
+        givenName: user.givenName ?? '',
         phoneNumber: '',
-        familyName: user.familyName,
+        familyName: user.familyName ?? '',
         id: user.id,
       },
     });
