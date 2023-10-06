@@ -25,7 +25,8 @@ const UpdateUserSchema = z.object({
   familyName: z.string().nonempty().describe('First name'),
   givenName: z.string().nonempty().describe('Last name'),
   phoneNumber: z.string().nonempty().regex(phoneRegex).describe('Phone number'),
-  dreamDescription: z.string().nonempty(),
+  dreamDescription: z.string().nonempty().describe('Dream description'),
+  email: z.string().nonempty().describe('Email'),
 });
 
 export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}
