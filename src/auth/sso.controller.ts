@@ -29,6 +29,7 @@ export class SsoController {
   @ApiQuery({
     name: 'return_to',
     type: String,
+    required: false,
   })
   @ApiOperation({
     description: 'auth0 start login',
