@@ -27,6 +27,12 @@ const UpdateUserSchema = z.object({
   phoneNumber: z.string().nonempty().regex(phoneRegex).describe('Phone number'),
   dreamDescription: z.string().nonempty().describe('Dream description'),
   email: z.string().nonempty().describe('Email'),
+  dreamJob: z.string().nonempty().describe('Dream job description'),
+  fearInLife: z.string().nonempty().describe('Fear in life description'),
+  professionSkills: z
+    .string()
+    .nonempty()
+    .describe('Profession skills description'),
 });
 
 export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}
@@ -52,6 +58,15 @@ export class UserResponseDto implements User {
 
   @ApiProperty()
   dreamDescription: string;
+
+  @ApiProperty()
+  dreamJob: string;
+
+  @ApiProperty()
+  fearInLife: string;
+
+  @ApiProperty()
+  professionSkills: string;
 
   @ApiProperty({
     type: String,

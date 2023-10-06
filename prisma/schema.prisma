@@ -18,6 +18,9 @@ model User {
   familyName       String        @db.VarChar(50)
   phoneNumber      String        @db.VarChar(20)
   dreamDescription String        @db.VarChar(300)
+  dreamJob         String        @db.VarChar(300)
+  fearInLife       String        @db.VarChar(300)
+  professionSkills String        @db.VarChar(300)
   UserPrompts      UserPrompts[]
 
   @@index([email], type: Hash)
