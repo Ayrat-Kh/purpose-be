@@ -9,7 +9,7 @@ const ConfigurationSchema = z.object({
     clientId: z.string().nonempty(),
     cookieSignKey: z.string(),
   }),
-  frontendAuthCallback: z.string().nonempty(),
+  frontendAuthCallback: z.string().optional(),
   databaseUrl: z.string().nonempty(),
   openAiApiKey: z.string().optional(),
 });

@@ -7,13 +7,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { type Response } from 'express';
+import { Request, type Response } from 'express';
 import { ApiFoundResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
 import { UsersService } from 'src/users/users.service';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 import { Auth0Service } from './auth0.service';
-import { CODE_VERIFIER_KEY } from './auth.constants';
+import { CODE_VERIFIER_KEY, RETURN_TO } from './auth.constants';
 import { Auth0CallbackGuard } from './auth0-callback.guard';
 import { type AuthorizeRequest } from 'src/users/users.dto';
 import { Public } from './auth.public.decorator';
@@ -26,6 +26,10 @@ export class SsoController {
     private readonly usersService: UsersService,
   ) {}
 
+  @ApiQuery({
+    name: 'return_to',
+    type: String,
+  })
   @ApiOperation({
     description: 'auth0 start login',
   })
@@ -36,13 +40,20 @@ export class SsoController {
   @HttpCode(HttpStatus.FOUND)
   @Get('/auth0')
   @Public()
-  async auth(@Res() response: Response) {
+  async auth(@Req() request: Request, @Res() response: Response) {
     const { codeVerifier, url } = await this.auth0Service.getAuthUrl();
 
     response.cookie(CODE_VERIFIER_KEY, codeVerifier, {
       httpOnly: true,
       signed: true,
     });
+
+    if (request.query.return_to) {
+      response.cookie(RETURN_TO, request.query.return_to, {
+        httpOnly: true,
+        signed: true,
+      });
+    }
 
     return response.redirect(url);
   }
@@ -68,9 +79,16 @@ export class SsoController {
   ) {
     await this.usersService.upsertUser(request.user);
 
-    response.clearCookie(CODE_VERIFIER_KEY);
+    const returnTo = request.signedCookies[RETURN_TO];
 
-    const url = new URL(this.configurationService.get('frontendAuthCallback'));
+    console.log('returnTo', returnTo);
+
+    response.clearCookie(CODE_VERIFIER_KEY);
+    response.clearCookie(RETURN_TO);
+
+    const url = new URL(
+      returnTo ?? this.configurationService.get('frontendAuthCallback'),
+    );
     url.searchParams.append('access_token', request.accessToken);
 
     return response.redirect(url.toString());
