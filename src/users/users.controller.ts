@@ -1,9 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   NotFoundException,
   Param,
+  Patch,
   Put,
   Req,
   UsePipes,
@@ -12,7 +14,7 @@ import { type User } from '@prisma/client';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
 
-import { UpdateUserDto, UserResponseDto } from './users.dto';
+import { PatchUserDto, UpdateUserDto, UserResponseDto } from './users.dto';
 import { UsersService } from './users.service';
 import { type AuthorizedRequest } from 'src/auth/auth.dto';
 
@@ -61,8 +63,47 @@ export class UsersController {
   async updateUser(
     @Param('id') id: string,
     @Body() user: UpdateUserDto,
+    @Req() req: AuthorizedRequest,
   ): Promise<User> {
+    if (req.user.sub !== id) {
+      throw new BadRequestException({
+        message: `Not allowed to edit the user with id: ${id}`,
+      });
+    }
+
     const dbUser = await this.userService.updateUserData(id, user);
+
+    if (!user) {
+      throw new NotFoundException(
+        {
+          message: `User with id: ${id} not found`,
+        },
+        {
+          description: 'description',
+        },
+      );
+    }
+
+    return dbUser;
+  }
+
+  @ApiOkResponse({
+    type: UserResponseDto,
+  })
+  @UsePipes(ZodValidationPipe)
+  @Patch(':id')
+  async patchUser(
+    @Param('id') id: string,
+    @Body() user: PatchUserDto,
+    @Req() req: AuthorizedRequest,
+  ): Promise<User> {
+    if (req.user.sub !== id) {
+      throw new BadRequestException({
+        message: `Not allowed to edit the user with id: ${id}`,
+      });
+    }
+
+    const dbUser = await this.userService.patchUserData(id, user);
 
     if (!user) {
       throw new NotFoundException(

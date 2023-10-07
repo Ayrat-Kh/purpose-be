@@ -82,8 +82,6 @@ export class SsoController {
 
     const returnTo = request.signedCookies[RETURN_TO];
 
-    console.log('returnTo', returnTo);
-
     response.clearCookie(CODE_VERIFIER_KEY);
     response.clearCookie(RETURN_TO);
 

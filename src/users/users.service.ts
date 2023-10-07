@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { type User } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -65,7 +65,9 @@ export class UsersService {
       });
 
       if (dbUser?.status === 'ONBOARDED') {
-        throw new Error('Can not update status for ONBOARDED user');
+        throw new BadRequestException({
+          message: `Can not update status for ONBOARDED user`,
+        });
       }
     }
 
