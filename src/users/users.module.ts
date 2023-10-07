@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 
-import { DbClient } from 'src/providers/db-client';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
+import { UsersListener } from './users.listener';
 
 @Module({
-  providers: [UsersService],
+  providers: [UsersService, UsersListener],
   exports: [UsersService],
   controllers: [UsersController],
 })

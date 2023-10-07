@@ -1,21 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { type User } from '@prisma/client';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { User } from '@prisma/client';
 
 import { DbClient } from 'src/providers/db-client';
 import {
-  type PatchUserDto,
+  PatchUserDto,
   type SocialUserLogin,
   type UpdateUserDto,
 } from './users.dto';
-import { OnboardedUserEvent, UserEvents } from './users.event';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly dbClient: DbClient,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private readonly dbClient: DbClient) {}
 
   async upsertUser(user: SocialUserLogin): Promise<User> {
     const dbUser = await this.getUserById(user.id);
@@ -75,13 +70,6 @@ export class UsersService {
         id,
       },
     });
-
-    if (user.status === 'ONBOARDED') {
-      this.eventEmitter.emit(
-        UserEvents.USER_ONBOARDED,
-        new OnboardedUserEvent(id),
-      );
-    }
 
     return result;
   }

@@ -22,8 +22,14 @@ model User {
   fearInLife       String        @db.VarChar(300)
   professionSkills String        @db.VarChar(300)
   UserPrompts      UserPrompts[]
+  status           UserStatus
 
   @@index([email], type: Hash)
+}
+
+enum UserStatus {
+  CREATED
+  ONBOARDED
 }
 
 model UserPrompts {

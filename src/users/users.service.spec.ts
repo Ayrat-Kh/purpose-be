@@ -57,6 +57,10 @@ describe('PromptsService', () => {
       phoneNumber: 'phoneNumber',
       familyName: 'familyName',
       givenName: 'givenName',
+      dreamJob: '',
+      email: '',
+      fearInLife: '',
+      professionSkills: '',
     };
 
     dbMockCtx.prismaMock.user.update.mockResolvedValue(response);

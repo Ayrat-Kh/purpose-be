@@ -1,3 +1,4 @@
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -11,6 +12,9 @@ import { JwtAuthGuard } from './auth/auth.strategy';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot({
+      delimiter: '.',
+    }),
     ConfigurationModule,
     AuthModule,
     UsersModule,
