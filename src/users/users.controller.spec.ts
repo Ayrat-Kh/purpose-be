@@ -5,6 +5,7 @@ import { mockDeep, mock, DeepMockProxy } from 'jest-mock-extended';
 import { AuthorizedRequest } from 'src/auth/auth.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { UpdateUserDto } from './users.dto';
 
 let usersService: DeepMockProxy<UsersService>;
 
@@ -55,14 +56,24 @@ describe('UsersController', () => {
 
     usersService.updateUserData.mockResolvedValue(response);
 
-    const user = {
+    const user: UpdateUserDto = {
       dreamDescription: 'dreamDescription',
       familyName: 'familyName',
       givenName: 'givenName',
       phoneNumber: 'phoneNumber',
+      dreamJob: '',
+      email: '',
+      fearInLife: '',
+      professionSkills: '',
     };
 
-    await expect(controller.updateUser('', user)).resolves.toEqual(response);
+    await expect(
+      controller.updateUser(
+        '',
+        user,
+        mock<AuthorizedRequest>({ user: { sub: '' } }),
+      ),
+    ).resolves.toEqual(response);
     expect(usersService.updateUserData).toHaveBeenCalledWith('', user);
   });
 });
