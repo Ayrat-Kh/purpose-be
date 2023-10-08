@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "start:email": "email dev -d ./src/mailing/templates"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.9.1",
@@ -28,12 +29,22 @@
     "@nestjs/event-emitter": "^2.0.2",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^7.1.12",
     "@prisma/client": "5.3.1",
     "@react-email/button": "0.0.10",
+    "@react-email/column": "0.0.7",
+    "@react-email/container": "0.0.8",
     "@react-email/head": "0.0.5",
+    "@react-email/heading": "0.0.9",
+    "@react-email/hr": "0.0.5",
     "@react-email/html": "0.0.4",
+    "@react-email/img": "0.0.5",
+    "@react-email/link": "0.0.5",
     "@react-email/render": "^0.0.7",
+    "@react-email/row": "0.0.5",
+    "@react-email/section": "0.0.9",
+    "@react-email/text": "0.0.5",
     "axios": "^1.5.0",
     "cookie-parser": "^1.4.6",
     "googleapis": "^126.0.1",
@@ -50,6 +61,7 @@
     "react": "^18.2.0",
     "react-email": "1.9.5",
     "reflect-metadata": "^0.1.13",
+    "resend": "^1.1.0",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
@@ -65,6 +77,7 @@
     "@types/passport-facebook": "^3.0.0",
     "@types/passport-google-oauth": "^1.0.42",
     "@types/passport-jwt": "^3.0.10",
+    "@types/react": "^18.2.27",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",

@@ -10,6 +10,8 @@ import { PromptsModule } from './prompts/prompts.module';
 import { ProvidersModule } from './providers/providers.module';
 import { JwtAuthGuard } from './auth/auth.strategy';
 import { MailingModule } from './mailing/mailing.module';
+import { join } from 'node:path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -22,6 +24,10 @@ import { MailingModule } from './mailing/mailing.module';
     PromptsModule,
     ProvidersModule,
     MailingModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..'),
+      renderPath: 'assets',
+    }),
   ],
   providers: [
     {
