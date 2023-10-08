@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { PromptsModule } from './prompts/prompts.module';
 import { ProvidersModule } from './providers/providers.module';
 import { JwtAuthGuard } from './auth/auth.strategy';
+import { MailingModule } from './mailing/mailing.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from './auth/auth.strategy';
     UsersModule,
     PromptsModule,
     ProvidersModule,
+    MailingModule,
   ],
   providers: [
     {

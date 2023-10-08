@@ -12,6 +12,14 @@ const ConfigurationSchema = z.object({
   frontendAuthCallback: z.string().optional(),
   databaseUrl: z.string().nonempty(),
   openAiApiKey: z.string().optional(),
+  email: z.object({
+    refreshToken: z.string().describe('user for gmail'),
+    clientId: z.string(),
+    clientSecret: z.string(),
+    redirectUrl: z.string(),
+    email: z.string(),
+    from: z.string(),
+  }),
 });
 
 export type Configuration = TypeOf<typeof ConfigurationSchema>;
@@ -30,6 +38,14 @@ export const getConfiguration = async (): Promise<Configuration> => {
     frontendAuthCallback: process.env.FRONTEND_AUTH_CALLBACK as string,
     databaseUrl: process.env.DATABASE_URL as string,
     openAiApiKey: process.env.OPENAI_API_KEY as string,
+    email: {
+      refreshToken: process.env.EMAIL_GOOGLE_REFRESH_TOKEN as string,
+      clientId: process.env.EMAIL_GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.EMAIL_GOOGLE_CLIENT_SECRET as string,
+      redirectUrl: process.env.EMAIL_GOOGLE_CLIENT_REDIRECT_URL as string,
+      email: process.env.EMAIL_GOOGLE_EMAIL as string,
+      from: process.env.EMAIL_FROM as string,
+    },
   };
 
   return ConfigurationSchema.parse(configuration);
