@@ -9,13 +9,12 @@ const ConfigurationSchema = z.object({
     clientId: z.string().nonempty(),
     cookieSignKey: z.string(),
   }),
-  frontendUrl: z.string().optional(),
-  backendUrl: z.string().optional(),
+  frontendUrl: z.string().nonempty(),
   databaseUrl: z.string().nonempty(),
-  openAiApiKey: z.string(),
+  openAiApiKey: z.string().nonempty(),
   email: z.object({
-    resendKey: z.string(),
-    from: z.string(),
+    resendKey: z.string().nonempty(),
+    from: z.string().nonempty(),
   }),
 });
 

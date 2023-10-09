@@ -20,3 +20,5 @@ init-db:
 		postgres \
 		-c shared_buffers=256MB \
 		-c max_connections=200
+
+	npx prisma migrate deploy

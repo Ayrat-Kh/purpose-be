@@ -85,7 +85,7 @@ export class SsoController {
     response.clearCookie(CODE_VERIFIER_KEY);
     response.clearCookie(RETURN_TO);
 
-    const url = new URL(returnTo);
+    const url = new URL(returnTo || 'http://localhost:3000');
     url.searchParams.append('access_token', request.accessToken);
 
     return response.redirect(url.toString());

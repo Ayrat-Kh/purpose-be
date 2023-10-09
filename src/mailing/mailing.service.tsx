@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Resend } from 'resend';
 
 import SentenceAnswers, {
@@ -8,7 +8,9 @@ import { ConfigurationService } from 'src/configuration/configuration.service';
 
 @Injectable()
 export class MailingService {
-  resend: Resend;
+  private readonly logger = new Logger('MailingService');
+
+  private readonly resend: Resend;
 
   constructor(private readonly configurationService: ConfigurationService) {
     this.resend = new Resend(configurationService.get('email').resendKey);
@@ -26,5 +28,7 @@ export class MailingService {
       to,
       react: <SentenceAnswers {...props} />,
     });
+
+    this.logger.verbose(`[sendSentenceAnswers] Send email for ${to}`);
   }
 }

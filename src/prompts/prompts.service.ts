@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { DbClient } from 'src/providers/db-client';
@@ -7,6 +7,8 @@ import { type User } from '@prisma/client';
 
 @Injectable()
 export class PromptsService {
+  private readonly logger = new Logger('PromptsService');
+
   constructor(
     private readonly openAiClient: OpenAiClient,
     private readonly dbClient: DbClient,
@@ -26,6 +28,12 @@ export class PromptsService {
         },
       ],
     });
+
+    this.logger.verbose(
+      `Prompted to openAI for user ${user.id}, content ${
+        p.content
+      }, Usage: ${JSON.stringify(response.usage ?? {})}`,
+    );
 
     const message = response.choices?.[0]?.message?.content ?? '';
 
