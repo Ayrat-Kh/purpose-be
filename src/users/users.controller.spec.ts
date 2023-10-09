@@ -57,7 +57,7 @@ describe('UsersController', () => {
     usersService.updateUserData.mockResolvedValue(response);
 
     const user: UpdateUserDto = {
-      dreamDescription: 'dreamDescription',
+      hobby: 'dreamDescription',
       familyName: 'familyName',
       givenName: 'givenName',
       phoneNumber: 'phoneNumber',

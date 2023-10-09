@@ -58,7 +58,7 @@ describe('PromptsService', () => {
     const response = mock<User>();
 
     const userInfo: UpdateUserDto = {
-      dreamDescription: 'dreamDescription',
+      hobby: 'dreamDescription',
       phoneNumber: 'phoneNumber',
       familyName: 'familyName',
       givenName: 'givenName',
@@ -79,7 +79,7 @@ describe('PromptsService', () => {
     const response = mock<User>();
 
     const userInfo: PatchUserDto = {
-      dreamDescription: 'dreamDescription',
+      hobby: 'dreamDescription',
       phoneNumber: 'phoneNumber',
       familyName: 'familyName',
       givenName: 'givenName',
@@ -103,7 +103,7 @@ describe('PromptsService', () => {
     const response = mock<User>();
 
     const userInfo: PatchUserDto = {
-      dreamDescription: 'dreamDescription',
+      hobby: 'dreamDescription',
       phoneNumber: 'phoneNumber',
       familyName: 'familyName',
       givenName: 'givenName',
