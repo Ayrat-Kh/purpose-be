@@ -85,9 +85,7 @@ export class SsoController {
     response.clearCookie(CODE_VERIFIER_KEY);
     response.clearCookie(RETURN_TO);
 
-    const url = new URL(
-      returnTo ?? this.configurationService.get('frontendAuthCallback'),
-    );
+    const url = new URL(returnTo);
     url.searchParams.append('access_token', request.accessToken);
 
     return response.redirect(url.toString());

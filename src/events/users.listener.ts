@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
-import { DbClient } from 'src/providers/db-client';
 import { OnEvent } from '@nestjs/event-emitter';
 import { type OnboardedUserEvent, UserEvents } from './users.event';
+import { PromptsService } from 'src/prompts/prompts.service';
 
 @Injectable()
 export class UsersListener {
-  constructor(private readonly dbClient: DbClient) {}
+  constructor(private readonly promptsService: PromptsService) {}
 
   @OnEvent(UserEvents.USER_ONBOARDED, { async: true })
   handleOrderCreatedEvent(payload: OnboardedUserEvent) {

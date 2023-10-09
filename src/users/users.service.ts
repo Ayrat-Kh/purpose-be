@@ -3,12 +3,12 @@ import { type User } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { DbClient } from 'src/providers/db-client';
+import { OnboardedUserEvent, UserEvents } from 'src/events/users.event';
 import {
   type PatchUserDto,
   type SocialUserLogin,
   type UpdateUserDto,
 } from './users.dto';
-import { OnboardedUserEvent, UserEvents } from './users.event';
 
 @Injectable()
 export class UsersService {

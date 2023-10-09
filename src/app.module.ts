@@ -12,6 +12,7 @@ import { JwtAuthGuard } from './auth/auth.strategy';
 import { MailingModule } from './mailing/mailing.module';
 import { join } from 'node:path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     PromptsModule,
     ProvidersModule,
     MailingModule,
+    EventsModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..'),
       renderPath: 'assets',
