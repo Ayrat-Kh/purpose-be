@@ -8,6 +8,7 @@ apply-migration:
 
 init-db:
 	# fd
+	docker stop purpose_db
 	docker rm purpose_db
 	docker run \
 		--name purpose_db \
