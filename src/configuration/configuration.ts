@@ -33,7 +33,6 @@ export const getConfiguration = async (): Promise<Configuration> => {
       cookieSignKey: process.env.AUTH0_COOKIE_SIGN_KEY as string,
     },
     frontendUrl: process.env.FRONTEND_URL as string,
-    backendUrl: process.env.BACKEND_URL as string,
     databaseUrl: process.env.DATABASE_URL as string,
     openAiApiKey: process.env.OPENAI_API_KEY as string,
     email: {
