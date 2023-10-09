@@ -75,7 +75,7 @@ describe('PromptsService', () => {
           content: 'hello',
         },
         {
-          sub: 'sub',
+          id: 'sub',
         },
       ),
     ).resolves.toEqual(userPrompt);
@@ -95,7 +95,7 @@ describe('PromptsService', () => {
 
     await expect(
       service.getUserPrompts({
-        sub: 'sub',
+        id: 'sub',
       }),
     ).resolves.toEqual([userPrompt]);
   });

@@ -7,4 +7,4 @@
 */
 -- AlterTable
 ALTER TABLE "User" DROP COLUMN "dreamDescription",
-ADD COLUMN     "hobby" VARCHAR(300) NOT NULL;
+ADD COLUMN     "hobby" VARCHAR(300) DEFAULT '';

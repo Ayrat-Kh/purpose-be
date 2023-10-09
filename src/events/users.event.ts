@@ -3,5 +3,5 @@ export const UserEvents = {
 } as const;
 
 export class OnboardedUserEvent {
-  constructor(private readonly userId: string) {}
+  constructor(public readonly userId: string) {}
 }

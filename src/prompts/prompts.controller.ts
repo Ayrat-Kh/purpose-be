@@ -35,7 +35,9 @@ export class PromptsController {
   async getUserPrompts(
     @Req() request: AuthorizedRequest,
   ): Promise<UserPromptDto[]> {
-    return await this.promptsService.getUserPrompts(request.user);
+    return await this.promptsService.getUserPrompts({
+      id: request.user.sub,
+    });
   }
 
   @Post()
@@ -54,6 +56,8 @@ export class PromptsController {
     @Body() prompt: CreatePromptDto,
     @Req() request: AuthorizedRequest,
   ): Promise<UserPromptDto> {
-    return await this.promptsService.prompt(prompt, request.user);
+    return await this.promptsService.prompt(prompt, {
+      id: request.user.sub,
+    });
   }
 }
