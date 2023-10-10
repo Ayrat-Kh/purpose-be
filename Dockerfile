@@ -19,9 +19,9 @@ FROM development AS production
 
 WORKDIR /app
 
-#COPY ./.env ./
 COPY ./prisma/ ./prisma/
-COPY package.json ./
+COPY ./assets/ ./assets/
+COPY package.json ./ 
 COPY start.sh ./
 RUN chmod +x /app/start.sh
 COPY pnpm-lock.yaml ./

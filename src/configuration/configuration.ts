@@ -10,11 +10,15 @@ const ConfigurationSchema = z.object({
     cookieSignKey: z.string(),
   }),
   frontendUrl: z.string().nonempty(),
+  backendUrl: z.string().nonempty(),
   databaseUrl: z.string().nonempty(),
   openAiApiKey: z.string().nonempty(),
   email: z.object({
     resendKey: z.string().nonempty(),
     from: z.string().nonempty(),
+  }),
+  assets: z.object({
+    logoUrl: z.string(),
   }),
 });
 
@@ -32,11 +36,15 @@ export const getConfiguration = async (): Promise<Configuration> => {
       cookieSignKey: process.env.AUTH0_COOKIE_SIGN_KEY as string,
     },
     frontendUrl: process.env.FRONTEND_URL as string,
+    backendUrl: process.env.BACKEND_URL as string,
     databaseUrl: process.env.DATABASE_URL as string,
     openAiApiKey: process.env.OPENAI_API_KEY as string,
     email: {
       resendKey: process.env.EMAIL_RESEND_KEY as string,
       from: process.env.EMAIL_FROM as string,
+    },
+    assets: {
+      logoUrl: 'assets/logo.png',
     },
   };
 

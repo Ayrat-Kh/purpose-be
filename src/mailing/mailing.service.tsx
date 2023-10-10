@@ -19,14 +19,18 @@ export class MailingService {
   async sendSentenceAnswers({
     to,
     ...props
-  }: SentenceAnswersProps & { to: string }) {
+  }: Pick<SentenceAnswersProps, 'answer' | 'link'> & { to: string }) {
     const { from } = this.configurationService.get('email');
+    const frontendUrl = this.configurationService.get('backendUrl');
+    const { logoUrl } = this.configurationService.get('assets');
 
     await this.resend.sendEmail({
       from,
       subject: 'Welcome',
       to,
-      react: <SentenceAnswers {...props} />,
+      react: (
+        <SentenceAnswers logoUrl={`${frontendUrl}/${logoUrl}`} {...props} />
+      ),
     });
 
     this.logger.verbose(`[sendSentenceAnswers] Send email for ${to}`);
