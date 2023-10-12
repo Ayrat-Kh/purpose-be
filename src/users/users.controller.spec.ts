@@ -15,6 +15,8 @@ describe('UsersController', () => {
   let controller: UsersController;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     usersService = mockDeep<UsersService>();
     eventEmitter = mockDeep<EventEmitter2>();
 
@@ -103,5 +105,27 @@ describe('UsersController', () => {
 
     expect(usersService.patchUserData).toHaveBeenCalledWith('', user);
     expect(eventEmitter.emit).toHaveBeenCalled();
+  });
+
+  it('should patch user data and not raise onboarded event if user is not onboarded', async () => {
+    const response = mock<User>();
+
+    usersService.updateUserData.mockResolvedValue(response);
+
+    const user: PatchUserDto = {
+      hobby: 'dreamDescription',
+      familyName: 'familyName',
+      givenName: 'givenName',
+      phoneNumber: 'phoneNumber',
+    };
+
+    await controller.patchUser(
+      '',
+      user,
+      mock<AuthorizedRequest>({ user: { sub: '' } }),
+    );
+
+    expect(usersService.patchUserData).toHaveBeenCalledWith('', user);
+    expect(eventEmitter.emit).not.toHaveBeenCalled();
   });
 });
