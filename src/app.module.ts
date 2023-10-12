@@ -13,6 +13,7 @@ import { MailingModule } from './mailing/mailing.module';
 import { join } from 'node:path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { EventsModule } from './events/events.module';
+import { SentencesModule } from './sentences/sentences.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { EventsModule } from './events/events.module';
       rootPath: join(__dirname, '..'),
       renderPath: 'assets',
     }),
+    SentencesModule,
   ],
   providers: [
     {

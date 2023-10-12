@@ -1,27 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
-import { OnEvent } from '@nestjs/event-emitter';
 import { type OnboardedUserEvent, UserEvents } from './users.event';
-import { PromptsService } from 'src/prompts/prompts.service';
 import { UsersService } from 'src/users/users.service';
-import { MailingService } from 'src/mailing/mailing.service';
-import { ConfigurationService } from 'src/configuration/configuration.service';
+import { CreateSentenceEvent, SentencesEvents } from './sentences.event';
+import { type SentenceDto } from 'src/sentences/sentences.dto';
 
 @Injectable()
 export class UsersListener {
   logger = new Logger('UsersListener');
 
   constructor(
-    private readonly configurationService: ConfigurationService,
-    private readonly emailService: MailingService,
-    private readonly promptsService: PromptsService,
     private readonly usersService: UsersService,
+    private readonly eventService: EventEmitter2,
   ) {}
 
   @OnEvent(UserEvents.USER_ONBOARDED, { async: true })
   async handleOrderCreatedEvent(payload: OnboardedUserEvent) {
-    const frontendUrl = this.configurationService.get('frontendUrl');
-
     try {
       const user = await this.usersService.getUserById(payload.userId);
 
@@ -32,27 +27,18 @@ export class UsersListener {
         return;
       }
 
-      this.logger.verbose(
-        `[${UserEvents.USER_ONBOARDED}]: Prompting to ${payload.userId}`,
+      this.eventService.emit(
+        SentencesEvents.CREATE_SENTENCE,
+        new CreateSentenceEvent(
+          {
+            dreamJob: user.dreamJob,
+            fearInLife: user.fearInLife,
+            hobby: user.hobby,
+            professionSkills: user.professionSkills,
+          } as unknown as SentenceDto,
+          user,
+        ),
       );
-      const response = await this.promptsService.prompt(
-        {
-          content: `Please advise and summarize next following statements: ${user.dreamJob} ${user.hobby} ${user.professionSkills} ${user.fearInLife}`,
-        },
-        {
-          id: payload.userId,
-        },
-      );
-
-      this.logger.verbose(
-        `[${UserEvents.USER_ONBOARDED}]: Send email for ${payload.userId}`,
-      );
-
-      await this.emailService.sendSentenceAnswers({
-        answer: response.responseMessage,
-        link: frontendUrl,
-        to: user.email,
-      });
     } catch (error) {
       this.logger.error(
         `[${UserEvents.USER_ONBOARDED}]: Error occurred.`,
