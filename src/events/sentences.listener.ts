@@ -18,14 +18,14 @@ export class SentencesListener {
   ) {}
 
   @OnEvent(SentencesEvents.CREATE_SENTENCE, { async: true })
-  async handleOrderCreatedEvent({ payload }: { payload: CreateSentenceEvent }) {
+  async handleOrderCreatedEvent(payload: CreateSentenceEvent) {
     const { sentence, user } = payload;
 
     const frontendUrl = this.configurationService.get('frontendUrl');
 
     try {
       this.logger.verbose(
-        `[${SentencesEvents.CREATE_SENTENCE}]: Prompting to ${user.email}`,
+        `[${SentencesEvents.CREATE_SENTENCE}]: Prompting for ${user.email}`,
       );
       const response = await this.promptsService.prompt(
         {
@@ -37,7 +37,7 @@ export class SentencesListener {
       );
 
       this.logger.verbose(
-        `[${SentencesEvents.CREATE_SENTENCE}]: Send email for ${user.email}`,
+        `[${SentencesEvents.CREATE_SENTENCE}]: Sending email for ${user.email}`,
       );
 
       await this.emailService.sendSentenceAnswers({
@@ -45,6 +45,10 @@ export class SentencesListener {
         link: frontendUrl,
         to: user.email,
       });
+
+      this.logger.verbose(
+        `[${SentencesEvents.CREATE_SENTENCE}]: Sent email for ${user.email}`,
+      );
     } catch (error) {
       this.logger.error(
         `[${SentencesEvents.CREATE_SENTENCE}]: Error occurred.`,

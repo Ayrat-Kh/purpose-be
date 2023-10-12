@@ -32,7 +32,9 @@ export class PromptsService {
     this.logger.verbose(
       `Prompted to openAI for user ${user.id}, content ${
         p.content
-      }, Usage: ${JSON.stringify(response.usage ?? {})}`,
+      }, Usage: ${JSON.stringify(
+        response.usage ?? {},
+      )}, response: ${JSON.stringify(response.choices)}`,
     );
 
     const message = response.choices?.[0]?.message?.content ?? '';
