@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { type User } from '@prisma/client';
 import { ZodValidationPipe } from 'nestjs-zod';
-import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
+import { ApiHeader, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { PatchUserDto, UpdateUserDto, UserResponseDto } from './users.dto';
@@ -93,8 +93,10 @@ export class UsersController {
     return dbUser;
   }
 
-  @ApiOkResponse({
-    type: UserResponseDto,
+  @ApiQuery({
+    name: 'ignore_onboarded_event',
+    type: Boolean,
+    required: false,
   })
   @UsePipes(ZodValidationPipe)
   @Patch(':id')
