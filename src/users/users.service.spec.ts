@@ -8,15 +8,13 @@ import {
   createDbMockContext,
 } from 'src/providers/db-client.mock';
 import { type User } from '@prisma/client';
-import { mock, mockDeep } from 'jest-mock-extended';
+import { mock } from 'jest-mock-extended';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PatchUserDto, SocialUserLogin, UpdateUserDto } from './users.dto';
 
 let dbMockCtx: DbMockContext;
 
 let service: UsersService;
-
-let eventEmitterMock = mockDeep<EventEmitter2>();
 
 beforeEach(async () => {
   dbMockCtx = createDbMockContext();
@@ -27,8 +25,6 @@ beforeEach(async () => {
   })
     .overrideProvider(DbClient)
     .useValue(dbMockCtx.prisma)
-    .overrideProvider(EventEmitter2)
-    .useValue(eventEmitterMock)
     .compile();
 
   service = module.get<UsersService>(UsersService);
@@ -95,8 +91,6 @@ describe('PromptsService', () => {
     await expect(service.patchUserData('', userInfo)).resolves.toEqual(
       response,
     );
-
-    expect(eventEmitterMock.emit).not.toHaveBeenCalled();
   });
 
   it('should patch user and emit onboarded event if status is ONBOARDED', async () => {
@@ -119,8 +113,6 @@ describe('PromptsService', () => {
     await expect(service.patchUserData('', userInfo)).resolves.toEqual(
       response,
     );
-
-    expect(eventEmitterMock.emit).toHaveBeenCalled();
   });
 
   it('should get user by id', async () => {

@@ -5,22 +5,27 @@ import { mockDeep, mock, DeepMockProxy } from 'jest-mock-extended';
 import { AuthorizedRequest } from 'src/auth/auth.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './users.dto';
+import { PatchUserDto, UpdateUserDto } from './users.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 let usersService: DeepMockProxy<UsersService>;
+let eventEmitter: DeepMockProxy<EventEmitter2>;
 
 describe('UsersController', () => {
   let controller: UsersController;
 
   beforeEach(async () => {
     usersService = mockDeep<UsersService>();
+    eventEmitter = mockDeep<EventEmitter2>();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UsersService],
+      providers: [UsersService, EventEmitter2],
       controllers: [UsersController],
     })
       .overrideProvider(UsersService)
       .useValue(usersService)
+      .overrideProvider(EventEmitter2)
+      .useValue(eventEmitter)
       .compile();
 
     controller = module.get<UsersController>(UsersController);
@@ -75,5 +80,28 @@ describe('UsersController', () => {
       ),
     ).resolves.toEqual(response);
     expect(usersService.updateUserData).toHaveBeenCalledWith('', user);
+  });
+
+  it('should patch user data and raise onboarded event', async () => {
+    const response = mock<User>();
+
+    usersService.updateUserData.mockResolvedValue(response);
+
+    const user: PatchUserDto = {
+      hobby: 'dreamDescription',
+      familyName: 'familyName',
+      givenName: 'givenName',
+      phoneNumber: 'phoneNumber',
+      status: 'ONBOARDED',
+    };
+
+    await controller.patchUser(
+      '',
+      user,
+      mock<AuthorizedRequest>({ user: { sub: '' } }),
+    );
+
+    expect(usersService.patchUserData).toHaveBeenCalledWith('', user);
+    expect(eventEmitter.emit).toHaveBeenCalled();
   });
 });

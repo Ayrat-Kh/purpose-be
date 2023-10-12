@@ -7,16 +7,19 @@ import {
   Param,
   Patch,
   Put,
+  Query,
   Req,
   UsePipes,
 } from '@nestjs/common';
 import { type User } from '@prisma/client';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiHeader, ApiOkResponse } from '@nestjs/swagger';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { PatchUserDto, UpdateUserDto, UserResponseDto } from './users.dto';
 import { UsersService } from './users.service';
 import { type AuthorizedRequest } from 'src/auth/auth.dto';
+import { OnboardedUserEvent, UserEvents } from 'src/events/users.event';
 
 @ApiHeader({
   name: 'Authorization',
@@ -24,7 +27,10 @@ import { type AuthorizedRequest } from 'src/auth/auth.dto';
 })
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @ApiOkResponse({
     type: UserResponseDto,
@@ -96,6 +102,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body() user: PatchUserDto,
     @Req() req: AuthorizedRequest,
+    @Query('ignore_onboarded_event') ignoreOnboardedEvent?: boolean,
   ): Promise<User> {
     if (req.user.sub !== id) {
       throw new BadRequestException({
@@ -105,14 +112,10 @@ export class UsersController {
 
     const dbUser = await this.userService.patchUserData(id, user);
 
-    if (!user) {
-      throw new NotFoundException(
-        {
-          message: `User with id: ${id} not found`,
-        },
-        {
-          description: 'description',
-        },
+    if (!ignoreOnboardedEvent && user.status === 'ONBOARDED') {
+      this.eventEmitter.emit(
+        UserEvents.USER_ONBOARDED,
+        new OnboardedUserEvent(id),
       );
     }
 

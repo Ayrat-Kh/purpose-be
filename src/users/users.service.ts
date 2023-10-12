@@ -1,9 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { type User } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { DbClient } from 'src/providers/db-client';
-import { OnboardedUserEvent, UserEvents } from 'src/events/users.event';
 import {
   type PatchUserDto,
   type SocialUserLogin,
@@ -12,10 +11,7 @@ import {
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly dbClient: DbClient,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private readonly dbClient: DbClient) {}
 
   async upsertUser(user: SocialUserLogin): Promise<User> {
     const dbUser = await this.getUserById(user.id);
@@ -52,38 +48,12 @@ export class UsersService {
   }
 
   async patchUserData(id: string, user: PatchUserDto): Promise<User> {
-    if (user.status === 'ONBOARDED') {
-      const dbUser = await this.dbClient.user.findFirst({
-        where: {
-          id: {
-            equals: id,
-          },
-        },
-        select: {
-          status: true,
-        },
-      });
-
-      if (dbUser?.status === 'ONBOARDED') {
-        throw new BadRequestException({
-          message: `Can not update status for ONBOARDED user`,
-        });
-      }
-    }
-
     const result = await this.dbClient.user.update({
       data: user,
       where: {
         id,
       },
     });
-
-    if (user.status === 'ONBOARDED') {
-      this.eventEmitter.emit(
-        UserEvents.USER_ONBOARDED,
-        new OnboardedUserEvent(id),
-      );
-    }
 
     return result;
   }
