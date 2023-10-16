@@ -53,10 +53,18 @@ export class PromptsService {
 
   public async getUserPrompts(
     user: Pick<User, 'id'>,
+    promptId: string | undefined = undefined,
   ): Promise<UserPromptDto[]> {
     const userPrompts = await this.dbClient.userPrompts.findMany({
       where: {
         userId: user.id,
+        ...(promptId
+          ? {
+              AND: {
+                id: promptId,
+              },
+            }
+          : {}),
       },
     });
 
