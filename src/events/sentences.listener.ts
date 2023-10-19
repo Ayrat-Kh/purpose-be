@@ -41,7 +41,7 @@ export class SentencesListener {
       );
 
       await this.emailService.sendSentenceAnswers({
-        answer: response.responseMessage,
+        statement: response,
         link: frontendUrl,
         to: user.email,
       });

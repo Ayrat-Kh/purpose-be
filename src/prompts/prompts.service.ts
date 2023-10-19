@@ -2,7 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { DbClient } from 'src/providers/db-client';
-import { CreatePromptDto, UserPromptDto } from './prompts.dto';
+import {
+  type CreatePromptDto,
+  type StatementResponse,
+  type UserPromptDto,
+} from './prompts.dto';
 import { type User } from '@prisma/client';
 
 @Injectable()
@@ -37,14 +41,33 @@ export class PromptsService {
       )}, response: ${JSON.stringify(response.choices)}`,
     );
 
-    const message = response.choices?.[0]?.message?.content ?? '';
+    console.log('response.choices', JSON.stringify(response.choices));
+
+    let message: StatementResponse = {
+      ambition: '',
+      fear: '',
+      love: '',
+      statement: '',
+      talent: '',
+    };
+
+    try {
+      message = JSON.parse(
+        response.choices?.[0]?.message?.content ?? '',
+      ) as StatementResponse;
+    } catch (e) {
+      this.logger.error(
+        "Couldn't parse response",
+        response.choices?.[0]?.message?.content,
+      );
+    }
 
     const result = await this.dbClient.userPrompts.create({
       data: {
         prompt: p.content,
         sessionId: response.id,
         userId: user.id,
-        responseMessage: message,
+        ...message,
       },
     });
 

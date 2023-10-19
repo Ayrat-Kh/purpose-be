@@ -1,5 +1,5 @@
 create-migration:
-	npx prisma migrate dev
+	npx prisma migrate dev --create-only
 
 apply-migration:
 	npx prisma migrate deploy

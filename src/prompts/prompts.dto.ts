@@ -17,8 +17,20 @@ const CreatePromptDtoSchema = z.object({
 export class CreatePromptDto extends createZodDto(CreatePromptDtoSchema) {}
 
 export class UserPromptDto implements UserPrompts {
-  @ApiProperty({ description: 'Open AI response' })
-  responseMessage: string;
+  @ApiProperty({ description: 'Open AI response overall response' })
+  statement: string;
+
+  @ApiProperty({ description: 'Open AI response fear statement' })
+  fear: string;
+
+  @ApiProperty({ description: 'Open AI response love statement' })
+  love: string;
+
+  @ApiProperty({ description: 'Open AI response talent statement' })
+  talent: string;
+
+  @ApiProperty({ description: 'Open AI response ambition statement' })
+  ambition: string;
 
   @ApiProperty({ description: 'Database prompt id' })
   id: string;
@@ -34,4 +46,12 @@ export class UserPromptDto implements UserPrompts {
 
   @ApiProperty({ description: 'Open AI conversation Id' })
   sessionId: string;
+}
+
+export interface StatementResponse {
+  statement: string;
+  fear: string;
+  love: string;
+  talent: string;
+  ambition: string;
 }

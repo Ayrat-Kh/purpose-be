@@ -12,6 +12,7 @@ import {
   OpenAiClientMockContext,
   createOpenAiClientMockContext,
 } from 'src/providers/open-ai-client.mock';
+import { UserPrompts } from '@prisma/client';
 
 let dbMockCtx: DbMockContext;
 let openAiMockCtx: OpenAiClientMockContext;
@@ -58,10 +59,14 @@ describe('PromptsService', () => {
       ],
     });
 
-    const userPrompt = {
+    const userPrompt: UserPrompts = {
       id: 'id',
       prompt: 'prompt',
-      responseMessage: 'responseMessage',
+      ambition: '',
+      fear: '',
+      love: '',
+      statement: '',
+      talent: '',
       sessionId: 'sessionId',
       userId: 'userId',
       createdAt: new Date(),
@@ -82,13 +87,17 @@ describe('PromptsService', () => {
   });
 
   it('should return list prompts', async () => {
-    const userPrompt = {
+    const userPrompt: UserPrompts = {
       id: 'id',
       prompt: 'prompt',
-      responseMessage: 'responseMessage',
       sessionId: 'sessionId',
       userId: 'userId',
       createdAt: new Date(),
+      fear: '',
+      love: '',
+      statement: '',
+      talent: '',
+      ambition: '',
     };
 
     dbMockCtx.prismaMock.userPrompts.findMany.mockResolvedValue([userPrompt]);

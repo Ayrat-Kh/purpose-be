@@ -1,4 +1,3 @@
-import { Button } from '@react-email/button';
 import { Html } from '@react-email/html';
 import { Head } from '@react-email/head';
 import { Section } from '@react-email/section';
@@ -9,15 +8,17 @@ import { Row } from '@react-email/row';
 import { Heading } from '@react-email/heading';
 import { Link } from '@react-email/link';
 
+import type { StatementResponse } from 'src/prompts/prompts.dto';
+
 export interface SentenceAnswersProps {
-  answer: string;
-  link: string;
-  logoUrl: string;
+  readonly statement: StatementResponse;
+  readonly link: string;
+  readonly logoUrl: string;
 }
 
 const SentenceAnswers = ({
   logoUrl,
-  answer = 'test answer',
+  statement,
   link,
 }: SentenceAnswersProps) => {
   return (
@@ -91,7 +92,7 @@ const SentenceAnswers = ({
             paddingBottom: '20px',
           }}
         >
-          {answer}
+          {statement.statement}
         </Text>
 
         <Row>

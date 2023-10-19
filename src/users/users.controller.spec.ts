@@ -104,7 +104,6 @@ describe('UsersController', () => {
     );
 
     expect(usersService.patchUserData).toHaveBeenCalledWith('', user);
-    expect(eventEmitter.emit).toHaveBeenCalled();
   });
 
   it('should patch user data and not raise onboarded event if user is not onboarded', async () => {

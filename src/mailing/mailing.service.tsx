@@ -19,7 +19,7 @@ export class MailingService {
   async sendSentenceAnswers({
     to,
     ...props
-  }: Pick<SentenceAnswersProps, 'answer' | 'link'> & { to: string }) {
+  }: Pick<SentenceAnswersProps, 'statement' | 'link'> & { to: string }) {
     const { from } = this.configurationService.get('email');
     const frontendUrl = this.configurationService.get('backendUrl');
     const { logoUrl } = this.configurationService.get('assets');
