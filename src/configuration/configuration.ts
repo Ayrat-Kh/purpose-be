@@ -19,6 +19,7 @@ const ConfigurationSchema = z.object({
   }),
   assets: z.object({
     logoUrl: z.string(),
+    fontsUrl: z.string(),
   }),
 });
 
@@ -45,6 +46,7 @@ export const getConfiguration = async (): Promise<Configuration> => {
     },
     assets: {
       logoUrl: 'assets/logo.png',
+      fontsUrl: 'assets/fonts',
     },
   };
 

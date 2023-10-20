@@ -7,6 +7,7 @@ import { Column } from '@react-email/column';
 import { Row } from '@react-email/row';
 import { Heading } from '@react-email/heading';
 import { Link } from '@react-email/link';
+import { Font } from '@react-email/font';
 
 import type { StatementResponse } from 'src/prompts/prompts.dto';
 
@@ -14,18 +15,91 @@ export interface SentenceAnswersProps {
   readonly statement: StatementResponse;
   readonly link: string;
   readonly logoUrl: string;
+  readonly fontsUrl: string;
 }
 
 const SentenceAnswers = ({
   logoUrl,
   statement,
   link,
+  fontsUrl,
 }: SentenceAnswersProps) => {
   return (
     <Html lang="en" dir="ltr">
       <Head>
         <title>Welcome</title>
-        <style></style>
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexCF-ExtraLight.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={200}
+          fontStyle="normal"
+        />
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexCF-Regular.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={400}
+          fontStyle="normal"
+        />
+
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexHandCF-ExtraLight.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={200}
+          fontStyle="normal"
+        />
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexHandCF-Light.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={300}
+          fontStyle="normal"
+        />
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexHandCF-Regular.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={400}
+          fontStyle="normal"
+        />
+
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexHandCF-ExtraBold.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={800}
+          fontStyle="normal"
+        />
+        <Font
+          fontFamily="artifex-hand-cf"
+          fallbackFontFamily="Verdana"
+          webFont={{
+            url: `${fontsUrl}/ArtifexHandCF-Heavy.otf`,
+            format: 'opentype',
+          }}
+          fontWeight={900}
+          fontStyle="normal"
+        />
       </Head>
       <Section
         style={{
@@ -77,7 +151,6 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
           }}
         >
           Your Statement is ready:
@@ -89,7 +162,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '4px',
           }}
         >
           {statement.statement}
@@ -101,7 +174,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '20px',
           }}
         >
           Fear:
@@ -112,7 +185,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '4px',
           }}
         >
           {statement.fear}
@@ -124,7 +197,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '20px',
           }}
         >
           Love:
@@ -135,7 +208,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '4px',
           }}
         >
           {statement.love}
@@ -147,7 +220,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '20px',
           }}
         >
           Talent:
@@ -158,7 +231,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '4px',
           }}
         >
           {statement.talent}
@@ -170,7 +243,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '20px',
           }}
         >
           Ambition:
@@ -181,7 +254,7 @@ const SentenceAnswers = ({
             fontFamily: 'artifex-hand-cf, sans-serif',
             fontSize: '18px',
             letterSpacing: '-0.9px',
-            paddingBottom: '20px',
+            paddingTop: '4px',
           }}
         >
           {statement.ambition}
