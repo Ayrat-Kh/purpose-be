@@ -95,6 +95,98 @@ const SentenceAnswers = ({
           {statement.statement}
         </Text>
 
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          Fear:
+        </Text>
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          {statement.fear}
+        </Text>
+
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          Love:
+        </Text>
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          {statement.love}
+        </Text>
+
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          Talent:
+        </Text>
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          {statement.talent}
+        </Text>
+
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          Ambition:
+        </Text>
+        <Text
+          style={{
+            color: '#44432E',
+            fontFamily: 'artifex-hand-cf, sans-serif',
+            fontSize: '18px',
+            letterSpacing: '-0.9px',
+            paddingBottom: '20px',
+          }}
+        >
+          {statement.ambition}
+        </Text>
+
         <Row>
           <Column align="center">
             <Link

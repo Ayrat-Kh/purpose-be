@@ -51,15 +51,32 @@ export class PromptsService {
       talent: '',
     };
 
+    let content = response.choices?.[0]?.message?.content ?? '';
+    if (!content.startsWith('{')) {
+      content = `{${content}`;
+    }
+
+    if (!content.endsWith('}')) {
+      content = `${content}}`;
+    }
     try {
-      message = JSON.parse(
-        response.choices?.[0]?.message?.content ?? '',
-      ) as StatementResponse;
+      const {
+        Ambition: ambition,
+        Fear: fear,
+        Love: love,
+        Statement: statement,
+        Talent: talent,
+      } = JSON.parse(content);
+
+      message = {
+        ambition,
+        fear,
+        love,
+        statement,
+        talent,
+      };
     } catch (e) {
-      this.logger.error(
-        "Couldn't parse response",
-        response.choices?.[0]?.message?.content,
-      );
+      this.logger.error("Couldn't parse response", content);
     }
 
     const result = await this.dbClient.userPrompts.create({
