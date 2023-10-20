@@ -43,39 +43,11 @@ export class PromptsService {
 
     console.log('response.choices', JSON.stringify(response.choices));
 
-    let message: StatementResponse = {
-      ambition: '',
-      fear: '',
-      love: '',
-      statement: '',
-      talent: '',
-    };
+    const content = response.choices?.[0]?.message?.content ?? '';
 
-    let content = response.choices?.[0]?.message?.content ?? '';
-    if (!content.startsWith('{')) {
-      content = `{${content}`;
-    }
+    const parsedResponse = this.getStatementResponse(content);
 
-    if (!content.endsWith('}')) {
-      content = `${content}}`;
-    }
-    try {
-      const {
-        Ambition: ambition,
-        Fear: fear,
-        Love: love,
-        Statement: statement,
-        Talent: talent,
-      } = JSON.parse(content);
-
-      message = {
-        ambition,
-        fear,
-        love,
-        statement,
-        talent,
-      };
-    } catch (e) {
+    if (parsedResponse === null) {
       this.logger.error("Couldn't parse response", content);
     }
 
@@ -84,7 +56,7 @@ export class PromptsService {
         prompt: p.content,
         sessionId: response.id,
         userId: user.id,
-        ...message,
+        ...(parsedResponse ?? EMPTY_STATEMENT_RESPONSE),
       },
     });
 
@@ -110,4 +82,46 @@ export class PromptsService {
 
     return userPrompts;
   }
+
+  private getStatementResponse(content: string): StatementResponse | null {
+    const jsonStartPart = content.indexOf(SEARCH_TEXT);
+
+    if (jsonStartPart === -1) {
+      return null;
+    }
+
+    const probablyJson = content
+      .slice(jsonStartPart + SEARCH_TEXT.length + 1)
+      .trim();
+
+    try {
+      const {
+        Ambition: ambition,
+        Fear: fear,
+        Love: love,
+        Statement: statement,
+        Talent: talent,
+      } = JSON.parse(probablyJson);
+
+      return {
+        ambition,
+        fear,
+        love,
+        statement,
+        talent,
+      };
+    } catch (e) {
+      return null;
+    }
+  }
 }
+
+const EMPTY_STATEMENT_RESPONSE: StatementResponse = {
+  ambition: '',
+  fear: '',
+  love: '',
+  statement: '',
+  talent: '',
+};
+
+const SEARCH_TEXT = 'JSON Object:';
