@@ -38,10 +38,10 @@ export class SentencesController {
     @Query('pageSize') pageSize: string,
   ) {
     let parsedPage = Number(page);
-    parsedPage = Number.isNaN(parsedPage) ? parsedPage : 1;
+    parsedPage = Number.isNaN(parsedPage) ? 1 : parsedPage;
 
     let parsedPageSize = Number(pageSize);
-    parsedPageSize = Number.isNaN(parsedPageSize) ? parsedPageSize : 4;
+    parsedPageSize = Number.isNaN(parsedPageSize) ? 4 : parsedPageSize;
 
     return await this.promptService.getUserPrompts({
       user: {
