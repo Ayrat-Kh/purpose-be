@@ -75,22 +75,37 @@ export class UserResponseDto implements User {
   })
   status: $Enums.UserStatus;
 
+  @ApiProperty({
+    type: String,
+  })
   @ApiProperty()
   id: string;
 
+  @ApiProperty({
+    type: String,
+  })
   @ApiProperty()
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+    example: 'test@test.com',
+  })
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   givenName: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   familyName: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: String,
+  })
   phoneNumber: string;
 
   @ApiProperty({
@@ -112,4 +127,9 @@ export class UserResponseDto implements User {
     deprecated: true,
   })
   professionSkills: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  lastSentenceId: string | null;
 }

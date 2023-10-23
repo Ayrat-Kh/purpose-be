@@ -5,7 +5,6 @@ import { PromptsService } from 'src/prompts/prompts.service';
 import { MailingService } from 'src/mailing/mailing.service';
 import { ConfigurationService } from 'src/configuration/configuration.service';
 import { type CreateSentenceEvent, SentencesEvents } from './sentences.event';
-import { getSentence } from './events.open-ai.constants';
 
 @Injectable()
 export class SentencesListener {
@@ -27,14 +26,9 @@ export class SentencesListener {
       this.logger.verbose(
         `[${SentencesEvents.CREATE_SENTENCE}]: Prompting for ${user.email}`,
       );
-      const response = await this.promptsService.prompt(
-        {
-          content: getSentence(sentence),
-        },
-        {
-          id: user.id,
-        },
-      );
+      const response = await this.promptsService.promptSentence(sentence, {
+        id: user.id,
+      });
 
       this.logger.verbose(
         `[${SentencesEvents.CREATE_SENTENCE}]: Sending email for ${user.email}`,

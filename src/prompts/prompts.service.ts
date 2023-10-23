@@ -2,12 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { DbClient } from 'src/providers/db-client';
-import {
-  type CreatePromptDto,
-  type StatementResponse,
-  type UserPromptDto,
-} from './prompts.dto';
-import { type User } from '@prisma/client';
+import type { StatementResponse, UserPromptDto } from './prompts.dto';
+import type { User } from '@prisma/client';
+import type { SentenceDto } from 'src/sentences/sentences.dto';
+import { getSentence } from './events.open-ai.constants';
+
+interface GetUserPromptsParams {
+  user: Pick<User, 'id'>;
+  promptId?: string | undefined;
+  page?: number;
+  pageSize?: number;
+}
 
 @Injectable()
 export class PromptsService {
@@ -18,25 +23,27 @@ export class PromptsService {
     private readonly dbClient: DbClient,
   ) {}
 
-  public async prompt(
-    p: CreatePromptDto,
+  public async promptSentence(
+    p: SentenceDto,
     user: Pick<User, 'id'>,
   ): Promise<UserPromptDto> {
+    const requestContent = getSentence(p);
+
     const response = await this.openAiClient.chat.completions.create({
       model: 'gpt-4',
-      temperature: p.temperature,
+      temperature: 0.4,
       messages: [
         {
           role: 'user',
-          content: p.content,
+          content: getSentence(p),
         },
       ],
     });
 
     this.logger.verbose(
-      `Prompted to openAI for user ${user.id}, content ${
-        p.content
-      }, Usage: ${JSON.stringify(
+      `Prompted to openAI for user ${user.id}, content ${JSON.stringify(
+        p,
+      )}, Usage: ${JSON.stringify(
         response.usage ?? {},
       )}, response: ${JSON.stringify(response.choices)}`,
     );
@@ -53,7 +60,7 @@ export class PromptsService {
 
     const result = await this.dbClient.userPrompts.create({
       data: {
-        prompt: p.content,
+        prompt: requestContent,
         sessionId: response.id,
         userId: user.id,
         ...(parsedResponse ?? EMPTY_STATEMENT_RESPONSE),
@@ -63,10 +70,12 @@ export class PromptsService {
     return result;
   }
 
-  public async getUserPrompts(
-    user: Pick<User, 'id'>,
-    promptId: string | undefined = undefined,
-  ): Promise<UserPromptDto[]> {
+  public async getUserPrompts({
+    pageSize = 4,
+    page = 1,
+    promptId,
+    user,
+  }: GetUserPromptsParams): Promise<UserPromptDto[]> {
     const userPrompts = await this.dbClient.userPrompts.findMany({
       where: {
         userId: user.id,
@@ -78,48 +87,26 @@ export class PromptsService {
             }
           : {}),
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
     return userPrompts;
   }
 
   private getStatementResponse(content: string): StatementResponse | null {
-    const jsonStartPart = content.indexOf(SEARCH_TEXT);
-
-    if (jsonStartPart === -1) {
-      try {
-        const {
-          Ambition: ambition,
-          Fear: fear,
-          Love: love,
-          Statement: statement,
-          Talent: talent,
-        } = JSON.parse(content);
-
-        return {
-          ambition,
-          fear,
-          love,
-          statement,
-          talent,
-        };
-      } catch (e) {
-        return null;
-      }
-    }
-
-    const probablyJson = content
-      .slice(jsonStartPart + SEARCH_TEXT.length + 1)
-      .trim();
-
     try {
+      const result = /\{(?:[^{}])*\}/.exec(content);
       const {
         Ambition: ambition,
         Fear: fear,
         Love: love,
         Statement: statement,
         Talent: talent,
-      } = JSON.parse(probablyJson);
+      } = JSON.parse(result?.[0] ?? '');
 
       return {
         ambition,
@@ -141,5 +128,3 @@ const EMPTY_STATEMENT_RESPONSE: StatementResponse = {
   statement: '',
   talent: '',
 };
-
-const SEARCH_TEXT = 'JSON Object:';

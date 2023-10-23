@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   Req,
   UsePipes,
 } from '@nestjs/common';
@@ -31,9 +32,23 @@ export class SentencesController {
   ) {}
 
   @Get()
-  async getAllSentences(@Req() request: AuthorizedRequest) {
+  async getAllSentences(
+    @Req() request: AuthorizedRequest,
+    @Query('page') page: string,
+    @Query('pageSize') pageSize: string,
+  ) {
+    let parsedPage = Number(page);
+    parsedPage = Number.isNaN(parsedPage) ? parsedPage : 1;
+
+    let parsedPageSize = Number(pageSize);
+    parsedPageSize = Number.isNaN(parsedPageSize) ? parsedPageSize : 4;
+
     return await this.promptService.getUserPrompts({
-      id: request.user.sub,
+      user: {
+        id: request.user.sub,
+      },
+      page: parsedPage,
+      pageSize: parsedPageSize,
     });
   }
 
@@ -42,12 +57,18 @@ export class SentencesController {
     @Req() request: AuthorizedRequest,
     @Param('sentenceId') sentenceId: string,
   ) {
-    return await this.promptService.getUserPrompts(
-      {
+    const result = await this.promptService.getUserPrompts({
+      user: {
         id: request.user.sub,
       },
-      sentenceId,
-    );
+      promptId: sentenceId,
+    });
+
+    if (!result?.[0]) {
+      throw new NotFoundException('Sentence not found');
+    }
+
+    return result[0];
   }
 
   @Post()

@@ -1,7 +1,8 @@
+import { join } from 'node:path';
+
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { join } from 'node:path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { PingController } from './ping/ping.controller';
