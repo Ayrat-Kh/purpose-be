@@ -87,7 +87,25 @@ export class PromptsService {
     const jsonStartPart = content.indexOf(SEARCH_TEXT);
 
     if (jsonStartPart === -1) {
-      return null;
+      try {
+        const {
+          Ambition: ambition,
+          Fear: fear,
+          Love: love,
+          Statement: statement,
+          Talent: talent,
+        } = JSON.parse(content);
+
+        return {
+          ambition,
+          fear,
+          love,
+          statement,
+          talent,
+        };
+      } catch (e) {
+        return null;
+      }
     }
 
     const probablyJson = content
