@@ -8,8 +8,7 @@ import { Row } from '@react-email/row';
 import { Heading } from '@react-email/heading';
 import { Link } from '@react-email/link';
 import { Font } from '@react-email/font';
-
-import type { StatementResponse } from 'src/prompts/prompts.dto';
+import { StatementResponse } from 'src/sentences/sentences.dto';
 
 export interface SentenceAnswersProps {
   readonly statement: StatementResponse;

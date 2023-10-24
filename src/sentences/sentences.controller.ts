@@ -12,56 +12,80 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ApiResponse } from '@nestjs/swagger';
 import { ZodValidationPipe } from 'nestjs-zod';
 
 import {
   CreateSentenceEvent,
   SentencesEvents,
 } from 'src/events/sentences.event';
-import { SentenceDto } from './sentences.dto';
+import {
+  SentenceDto,
+  UserSentenceDto,
+  UserSentencesListResponse,
+} from './sentences.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthorizedRequest } from 'src/auth/auth.dto';
-import { PromptsService } from 'src/prompts/prompts.service';
+import { SentencesService } from './sentences.service';
 
 @Controller('sentences')
 export class SentencesController {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly userService: UsersService,
-    private readonly promptService: PromptsService,
+    private readonly sentencesService: SentencesService,
   ) {}
 
+  @ApiResponse({
+    type: UserSentencesListResponse,
+  })
   @Get()
   async getAllSentences(
     @Req() request: AuthorizedRequest,
     @Query('page') page: string,
     @Query('pageSize') pageSize: string,
-  ) {
+  ): Promise<UserSentencesListResponse> {
     let parsedPage = Number(page);
     parsedPage = Number.isNaN(parsedPage) ? 1 : parsedPage;
 
     let parsedPageSize = Number(pageSize);
     parsedPageSize = Number.isNaN(parsedPageSize) ? 4 : parsedPageSize;
 
-    return await this.promptService.getUserPrompts({
-      user: {
-        id: request.user.sub,
-      },
+    const user = {
+      id: request.user.sub,
+    };
+
+    const sentences = await this.sentencesService.getUserSentences({
+      user,
       page: parsedPage,
       pageSize: parsedPageSize,
     });
+
+    return {
+      sentences,
+      meta: {
+        pageSize: parsedPageSize,
+        page: parsedPage,
+        total: await this.sentencesService.getUserSentencesCount({
+          user,
+        }),
+      },
+    };
   }
 
+  @ApiResponse({
+    type: UserSentenceDto,
+  })
   @Get('/:sentenceId')
   async getSentence(
     @Req() request: AuthorizedRequest,
     @Param('sentenceId') sentenceId: string,
   ) {
-    const result = await this.promptService.getUserPrompts({
+    const result = await this.sentencesService.getUserSentences({
       user: {
         id: request.user.sub,
       },
-      promptId: sentenceId,
+      sentenceId,
     });
 
     if (!result?.[0]) {

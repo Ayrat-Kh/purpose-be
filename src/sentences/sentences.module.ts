@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
+
 import { SentencesController } from './sentences.controller';
 import { UsersModule } from 'src/users/users.module';
-import { PromptsModule } from 'src/prompts/prompts.module';
+import { SentencesService } from './sentences.service';
 
 @Module({
-  imports: [UsersModule, PromptsModule],
+  imports: [forwardRef(() => UsersModule)],
+  providers: [SentencesService],
   controllers: [SentencesController],
+  exports: [SentencesService],
 })
 export class SentencesModule {}

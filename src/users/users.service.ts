@@ -8,14 +8,14 @@ import {
   type UpdateUserDto,
 } from './users.dto';
 import { CacheService } from 'src/providers/cache-service';
-import { PromptsService } from 'src/prompts/prompts.service';
+import { SentencesService } from 'src/sentences/sentences.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly dbClient: DbClient,
     private readonly cacheService: CacheService,
-    private readonly promptsService: PromptsService,
+    private readonly sentencesService: SentencesService,
   ) {}
 
   async upsertUser(user: SocialUserLogin): Promise<UserResponseDto> {
@@ -59,7 +59,7 @@ export class UsersService {
 
     return {
       ...result,
-      ...(await this.getLatestPrompt(id)),
+      ...(await this.getLatestSentence(id)),
     };
   }
 
@@ -78,7 +78,7 @@ export class UsersService {
 
     return {
       ...result,
-      ...(await this.getLatestPrompt(id)),
+      ...(await this.getLatestSentence(id)),
     };
   }
 
@@ -94,15 +94,15 @@ export class UsersService {
     return result
       ? {
           ...result,
-          ...(await this.getLatestPrompt(id)),
+          ...(await this.getLatestSentence(id)),
         }
       : null;
   }
 
-  private async getLatestPrompt(userId: string): Promise<{
+  private async getLatestSentence(userId: string): Promise<{
     lastSentenceId: string | null;
   }> {
-    const result = await this.promptsService.getUserPrompts({
+    const result = await this.sentencesService.getUserSentences({
       user: {
         id: userId,
       },

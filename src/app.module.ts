@@ -9,7 +9,6 @@ import { PingController } from './ping/ping.controller';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { PromptsModule } from './prompts/prompts.module';
 import { ProvidersModule } from './providers/providers.module';
 import { JwtAuthGuard } from './auth/auth.strategy';
 import { MailingModule } from './mailing/mailing.module';
@@ -24,7 +23,6 @@ import { SentencesModule } from './sentences/sentences.module';
     ConfigurationModule,
     AuthModule,
     UsersModule,
-    PromptsModule,
     ProvidersModule,
     MailingModule,
     EventsModule,

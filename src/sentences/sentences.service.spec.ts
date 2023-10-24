@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { PromptsService } from './prompts.service';
+import { SentencesService } from './sentences.service';
 import { DbClient } from 'src/providers/db-client';
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
@@ -16,14 +16,14 @@ import { UserPrompts } from '@prisma/client';
 
 let dbMockCtx: DbMockContext;
 let openAiMockCtx: OpenAiClientMockContext;
-let service: PromptsService;
+let service: SentencesService;
 
 beforeEach(async () => {
   dbMockCtx = createDbMockContext();
   openAiMockCtx = createOpenAiClientMockContext();
 
   const module: TestingModule = await Test.createTestingModule({
-    providers: [PromptsService, DbClient, OpenAiClient],
+    providers: [SentencesService, DbClient, OpenAiClient],
     imports: [ConfigurationModule],
   })
     .overrideProvider(DbClient)
@@ -33,15 +33,15 @@ beforeEach(async () => {
 
     .compile();
 
-  service = module.get<PromptsService>(PromptsService);
+  service = module.get<SentencesService>(SentencesService);
 });
 
-describe('PromptsService', () => {
+describe('SentencesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create new prompt', async () => {
+  it('should create new sentence', async () => {
     openAiMockCtx.openAiClientMock.chat.completions.create.mockResolvedValue({
       id: 'id',
       created: 1,
@@ -59,7 +59,7 @@ describe('PromptsService', () => {
       ],
     });
 
-    const userPrompt: UserPrompts = {
+    const userSentence: UserPrompts = {
       id: 'id',
       prompt: 'prompt',
       ambition: '',
@@ -72,22 +72,25 @@ describe('PromptsService', () => {
       createdAt: new Date(),
     };
 
-    dbMockCtx.prismaMock.userPrompts.create.mockResolvedValue(userPrompt);
+    dbMockCtx.prismaMock.userPrompts.create.mockResolvedValue(userSentence);
 
     await expect(
-      service.prompt(
+      service.promptSentence(
         {
-          content: 'hello',
+          ambition: 'ambition',
+          fear: 'fear',
+          love: 'love',
+          talent: 'talent',
         },
         {
           id: 'sub',
         },
       ),
-    ).resolves.toEqual(userPrompt);
+    ).resolves.toEqual(userSentence);
   });
 
   it('should return list prompts', async () => {
-    const userPrompt: UserPrompts = {
+    const userSentence: UserPrompts = {
       id: 'id',
       prompt: 'prompt',
       sessionId: 'sessionId',
@@ -100,12 +103,14 @@ describe('PromptsService', () => {
       ambition: '',
     };
 
-    dbMockCtx.prismaMock.userPrompts.findMany.mockResolvedValue([userPrompt]);
+    dbMockCtx.prismaMock.userPrompts.findMany.mockResolvedValue([userSentence]);
 
     await expect(
-      service.getUserPrompts({
-        id: 'sub',
+      service.getUserSentences({
+        user: {
+          id: 'sub',
+        },
       }),
-    ).resolves.toEqual([userPrompt]);
+    ).resolves.toEqual([userSentence]);
   });
 });

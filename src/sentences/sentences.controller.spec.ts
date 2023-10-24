@@ -4,11 +4,11 @@ import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
 import { SentencesController } from './sentences.controller';
 import { UsersService } from 'src/users/users.service';
-import { PromptsService } from 'src/prompts/prompts.service';
+import { SentencesService } from 'src/sentences/sentences.service';
 
 let usersService: DeepMockProxy<UsersService>;
 let eventEmitter: DeepMockProxy<EventEmitter2>;
-let promptsService: DeepMockProxy<PromptsService>;
+let sentenceService: DeepMockProxy<SentencesService>;
 
 describe('SentencesController', () => {
   let controller: SentencesController;
@@ -16,18 +16,18 @@ describe('SentencesController', () => {
   beforeEach(async () => {
     usersService = mockDeep<UsersService>();
     eventEmitter = mockDeep<EventEmitter2>();
-    promptsService = mockDeep<PromptsService>();
+    sentenceService = mockDeep<SentencesService>();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EventEmitter2, UsersService, PromptsService],
+      providers: [EventEmitter2, UsersService, SentencesService],
       controllers: [SentencesController],
     })
       .overrideProvider(EventEmitter2)
       .useValue(eventEmitter)
       .overrideProvider(UsersService)
       .useValue(usersService)
-      .overrideProvider(PromptsService)
-      .useValue(promptsService)
+      .overrideProvider(SentencesService)
+      .useValue(sentenceService)
       .compile();
 
     controller = module.get<SentencesController>(SentencesController);

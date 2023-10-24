@@ -105,6 +105,7 @@ export class UserResponseDto implements User {
 
   @ApiProperty({
     type: String,
+    example: '9537775544',
   })
   phoneNumber: string;
 

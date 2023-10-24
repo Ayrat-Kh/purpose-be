@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from 'src/users/users.module';
-import { PromptsModule } from 'src/prompts/prompts.module';
+
 import { MailingModule } from 'src/mailing/mailing.module';
+import { SentencesModule } from 'src/sentences/sentences.module';
 import { UsersListener } from './users.listener';
 import { SentencesListener } from './sentences.listener';
 
 @Module({
-  imports: [UsersModule, PromptsModule, MailingModule],
+  imports: [UsersModule, SentencesModule, MailingModule],
   providers: [UsersListener, SentencesListener],
 })
 export class EventsModule {}

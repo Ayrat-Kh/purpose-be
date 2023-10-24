@@ -2,21 +2,18 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { DbClient } from 'src/providers/db-client';
-import type { StatementResponse, UserPromptDto } from './prompts.dto';
+import type {
+  GetUserSentencesParams,
+  StatementResponse,
+  UserSentenceDto,
+} from './sentences.dto';
 import type { User } from '@prisma/client';
 import type { SentenceDto } from 'src/sentences/sentences.dto';
-import { getSentence } from './events.open-ai.constants';
-
-interface GetUserPromptsParams {
-  user: Pick<User, 'id'>;
-  promptId?: string | undefined;
-  page?: number;
-  pageSize?: number;
-}
+import { getSentence } from './sentences.constants';
 
 @Injectable()
-export class PromptsService {
-  private readonly logger = new Logger('PromptsService');
+export class SentencesService {
+  private readonly logger = new Logger('SentencesService');
 
   constructor(
     private readonly openAiClient: OpenAiClient,
@@ -26,7 +23,7 @@ export class PromptsService {
   public async promptSentence(
     p: SentenceDto,
     user: Pick<User, 'id'>,
-  ): Promise<UserPromptDto> {
+  ): Promise<UserSentenceDto> {
     const requestContent = getSentence(p);
 
     const response = await this.openAiClient.chat.completions.create({
@@ -35,7 +32,7 @@ export class PromptsService {
       messages: [
         {
           role: 'user',
-          content: getSentence(p),
+          content: requestContent,
         },
       ],
     });
@@ -70,31 +67,45 @@ export class PromptsService {
     return result;
   }
 
-  public async getUserPrompts({
+  public async getUserSentences({
     pageSize = 4,
     page = 1,
-    promptId,
+    sentenceId,
     user,
-  }: GetUserPromptsParams): Promise<UserPromptDto[]> {
-    const userPrompts = await this.dbClient.userPrompts.findMany({
-      where: {
-        userId: user.id,
-        ...(promptId
-          ? {
-              AND: {
-                id: promptId,
-              },
-            }
-          : {}),
-      },
+  }: GetUserSentencesParams): Promise<UserSentenceDto[]> {
+    return await this.dbClient.userPrompts.findMany({
+      where: this.getListQuery({ user, sentenceId }),
       orderBy: {
         createdAt: 'desc',
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+  }
 
-    return userPrompts;
+  public async getUserSentencesCount({
+    sentenceId,
+    user,
+  }: Pick<GetUserSentencesParams, 'user' | 'sentenceId'>): Promise<number> {
+    return await this.dbClient.userPrompts.count({
+      where: this.getListQuery({ user, sentenceId }),
+    });
+  }
+
+  private getListQuery({
+    user,
+    sentenceId,
+  }: Pick<GetUserSentencesParams, 'sentenceId' | 'user'>) {
+    return {
+      userId: user.id,
+      ...(sentenceId
+        ? {
+            AND: {
+              id: sentenceId,
+            },
+          }
+        : {}),
+    };
   }
 
   private getStatementResponse(content: string): StatementResponse | null {

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { type User } from '@prisma/client';
 import { mockDeep, mock, DeepMockProxy } from 'jest-mock-extended';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { AuthorizedRequest } from 'src/auth/auth.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { PatchUserDto, UpdateUserDto } from './users.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PatchUserDto, UpdateUserDto, UserResponseDto } from './users.dto';
 
 let usersService: DeepMockProxy<UsersService>;
 let eventEmitter: DeepMockProxy<EventEmitter2>;
@@ -38,28 +38,30 @@ describe('UsersController', () => {
   });
 
   it('should return user meta info', async () => {
-    const response = mock<User>();
+    const response = mock<UserResponseDto>({ id: 'id' });
 
     usersService.getUserById.mockResolvedValue(response);
 
     await expect(controller.getMe(mock<AuthorizedRequest>())).resolves.toEqual(
-      response,
+      expect.objectContaining(response),
     );
 
     expect(usersService.getUserById).toHaveBeenCalled();
   });
 
   it('should return a user info', async () => {
-    const response = mock<User>();
+    const response = mock<UserResponseDto>();
 
     usersService.getUserById.mockResolvedValue(response);
 
-    await expect(controller.getUser('')).resolves.toEqual(response);
+    await expect(controller.getUser('')).resolves.toEqual(
+      expect.objectContaining(response),
+    );
     expect(usersService.getUserById).toHaveBeenCalled();
   });
 
   it('should update user data', async () => {
-    const response = mock<User>();
+    const response = mock<UserResponseDto>({ id: 'id' });
 
     usersService.updateUserData.mockResolvedValue(response);
 
@@ -80,12 +82,13 @@ describe('UsersController', () => {
         user,
         mock<AuthorizedRequest>({ user: { sub: '' } }),
       ),
-    ).resolves.toEqual(response);
+    ).resolves.toEqual(expect.objectContaining(response));
+
     expect(usersService.updateUserData).toHaveBeenCalledWith('', user);
   });
 
   it('should patch user data and raise onboarded event', async () => {
-    const response = mock<User>();
+    const response = mock<UserResponseDto>({ id: 'id' });
 
     usersService.updateUserData.mockResolvedValue(response);
 
@@ -107,7 +110,7 @@ describe('UsersController', () => {
   });
 
   it('should patch user data and not raise onboarded event if user is not onboarded', async () => {
-    const response = mock<User>();
+    const response = mock<UserResponseDto>({ id: 'id' });
 
     usersService.updateUserData.mockResolvedValue(response);
 
