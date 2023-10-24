@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { type User } from '@prisma/client';
 import { mockDeep, mock, DeepMockProxy } from 'jest-mock-extended';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -43,7 +42,7 @@ describe('UsersController', () => {
     usersService.getUserById.mockResolvedValue(response);
 
     await expect(controller.getMe(mock<AuthorizedRequest>())).resolves.toEqual(
-      expect.objectContaining(response),
+      response,
     );
 
     expect(usersService.getUserById).toHaveBeenCalled();
@@ -54,9 +53,7 @@ describe('UsersController', () => {
 
     usersService.getUserById.mockResolvedValue(response);
 
-    await expect(controller.getUser('')).resolves.toEqual(
-      expect.objectContaining(response),
-    );
+    await expect(controller.getUser('')).resolves.toEqual(response);
     expect(usersService.getUserById).toHaveBeenCalled();
   });
 
@@ -78,13 +75,13 @@ describe('UsersController', () => {
 
     await expect(
       controller.updateUser(
-        '',
+        '111',
         user,
-        mock<AuthorizedRequest>({ user: { sub: '' } }),
+        mock<AuthorizedRequest>({ user: { sub: '111' } }),
       ),
-    ).resolves.toEqual(expect.objectContaining(response));
+    ).resolves.toEqual(response);
 
-    expect(usersService.updateUserData).toHaveBeenCalledWith('', user);
+    expect(usersService.updateUserData).toHaveBeenCalledWith('111', user);
   });
 
   it('should patch user data and raise onboarded event', async () => {
