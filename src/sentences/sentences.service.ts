@@ -1,14 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
+import type { User } from '@prisma/client';
 
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { DbClient } from 'src/providers/db-client';
 import type {
   GetUserSentencesParams,
-  StatementResponse,
   UserSentenceDto,
+  SentenceDto,
 } from './sentences.dto';
-import type { User } from '@prisma/client';
-import type { SentenceDto } from 'src/sentences/sentences.dto';
 import { getSentence } from './sentences.constants';
 
 @Injectable()
@@ -55,7 +54,7 @@ export class SentencesService {
       this.logger.error("Couldn't parse response", content);
     }
 
-    const result = await this.dbClient.userPrompts.create({
+    return await this.dbClient.userPrompts.create({
       data: {
         prompt: requestContent,
         sessionId: response.id,
@@ -63,8 +62,6 @@ export class SentencesService {
         ...(parsedResponse ?? EMPTY_STATEMENT_RESPONSE),
       },
     });
-
-    return result;
   }
 
   public async getUserSentences({
@@ -108,7 +105,12 @@ export class SentencesService {
     };
   }
 
-  private getStatementResponse(content: string): StatementResponse | null {
+  private getStatementResponse(
+    content: string,
+  ): Pick<
+    UserSentenceDto,
+    'ambition' | 'fear' | 'love' | 'statement' | 'talent'
+  > | null {
     try {
       const result = /\{(?:[^{}])*\}/.exec(content);
       const {
@@ -132,7 +134,10 @@ export class SentencesService {
   }
 }
 
-const EMPTY_STATEMENT_RESPONSE: StatementResponse = {
+const EMPTY_STATEMENT_RESPONSE: Pick<
+  UserSentenceDto,
+  'ambition' | 'fear' | 'love' | 'statement' | 'talent'
+> = {
   ambition: '',
   fear: '',
   love: '',

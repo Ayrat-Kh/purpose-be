@@ -8,11 +8,12 @@ import { Row } from '@react-email/row';
 import { Heading } from '@react-email/heading';
 import { Link } from '@react-email/link';
 import { Font } from '@react-email/font';
-import { StatementResponse } from 'src/sentences/sentences.dto';
+
+import { UserSentenceDto } from 'src/sentences/sentences.dto';
 
 export interface SentenceAnswersProps {
-  readonly statement: StatementResponse;
-  readonly link: string;
+  readonly statement: UserSentenceDto;
+  readonly dashboardLink: string;
   readonly logoUrl: string;
   readonly fontsUrl: string;
 }
@@ -20,7 +21,7 @@ export interface SentenceAnswersProps {
 const SentenceAnswers = ({
   logoUrl,
   statement,
-  link,
+  dashboardLink,
   fontsUrl,
 }: SentenceAnswersProps) => {
   return (
@@ -262,7 +263,7 @@ const SentenceAnswers = ({
         <Row>
           <Column align="center">
             <Link
-              href={link}
+              href={dashboardLink}
               style={{
                 color: '#44432E',
                 fontFamily: 'artifex-hand-cf, sans-serif',

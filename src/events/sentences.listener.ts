@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 import { MailingService } from 'src/mailing/mailing.service';
-import { ConfigurationService } from 'src/configuration/configuration.service';
 import { type CreateSentenceEvent, SentencesEvents } from './sentences.event';
 import { SentencesService } from 'src/sentences/sentences.service';
 
@@ -11,7 +10,6 @@ export class SentencesListener {
   logger = new Logger('SentencesListener');
 
   constructor(
-    private readonly configurationService: ConfigurationService,
     private readonly emailService: MailingService,
     private readonly sentencesService: SentencesService,
   ) {}
@@ -19,8 +17,6 @@ export class SentencesListener {
   @OnEvent(SentencesEvents.CREATE_SENTENCE, { async: true })
   async handleOrderCreatedEvent(payload: CreateSentenceEvent) {
     const { sentence, user } = payload;
-
-    const frontendUrl = this.configurationService.get('frontendUrl');
 
     try {
       this.logger.verbose(
@@ -36,7 +32,6 @@ export class SentencesListener {
 
       await this.emailService.sendSentenceAnswers({
         statement: response,
-        link: frontendUrl,
         to: user.email,
       });
 

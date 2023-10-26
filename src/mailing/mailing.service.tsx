@@ -18,11 +18,13 @@ export class MailingService {
 
   async sendSentenceAnswers({
     to,
-    ...props
-  }: Pick<SentenceAnswersProps, 'statement' | 'link'> & { to: string }) {
+    statement,
+  }: Pick<SentenceAnswersProps, 'statement'> & { to: string }) {
     const { from } = this.configurationService.get('email');
     const backendUrl = this.configurationService.get('backendUrl');
     const { logoUrl, fontsUrl } = this.configurationService.get('assets');
+    const frontendUrl = this.configurationService.get('frontendUrl');
+    const dashboardLink = `${frontendUrl}/dashboard?id=${statement.id}`;
 
     await this.resend.sendEmail({
       from,
@@ -32,7 +34,8 @@ export class MailingService {
         <SentenceAnswers
           logoUrl={`${backendUrl}/${logoUrl}`}
           fontsUrl={`${backendUrl}/${fontsUrl}`}
-          {...props}
+          statement={statement}
+          dashboardLink={dashboardLink}
         />
       ),
     });

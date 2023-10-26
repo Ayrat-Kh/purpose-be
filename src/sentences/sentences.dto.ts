@@ -84,14 +84,6 @@ export class UserSentencesListResponse {
   meta: UserSentencesListResponseMeta;
 }
 
-export interface StatementResponse {
-  statement: string;
-  fear: string;
-  love: string;
-  talent: string;
-  ambition: string;
-}
-
 export interface GetUserSentencesParams {
   user: Pick<User, 'id'>;
   sentenceId?: string | undefined;
