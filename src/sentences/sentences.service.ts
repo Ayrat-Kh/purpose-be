@@ -44,8 +44,6 @@ export class SentencesService {
       )}, response: ${JSON.stringify(response.choices)}`,
     );
 
-    console.log('response.choices', JSON.stringify(response.choices));
-
     const content = response.choices?.[0]?.message?.content ?? '';
 
     const parsedResponse = this.getStatementResponse(content);
