@@ -91,7 +91,8 @@ export class SsoController {
     response.cookie('is-authorized', 'true', {
       maxAge: request.accessTokenExpiresIn * 1000,
       httpOnly: false,
-      domain: url.origin,
+      domain: url.host,
+      sameSite: 'none',
     });
 
     return response.redirect(url.toString());
