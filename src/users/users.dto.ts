@@ -47,7 +47,11 @@ export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}
 const PatchUserSchema = z.object({
   familyName: z.string().optional().describe('First name'),
   givenName: z.string().optional().describe('Last name'),
-  phoneNumber: z.string().regex(phoneRegex).optional().describe('Phone number'),
+  phoneNumber: z
+    .string()
+    .optional()
+    .or(z.string().regex(phoneRegex))
+    .describe('Phone number'),
   email: z.string().optional().describe('Email'),
   hobby: z.string().optional().describe('(Deprecated) Dream description'),
   dreamJob: z
