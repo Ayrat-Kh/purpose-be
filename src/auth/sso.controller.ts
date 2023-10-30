@@ -89,7 +89,7 @@ export class SsoController {
     url.searchParams.append('access_token', request.accessToken);
     url.searchParams.append(
       'access_token_max_age',
-      String(request.accessTokenExpiresIn * 1000),
+      String(request.accessTokenExpiresIn),
     );
 
     return response.redirect(url.toString());
