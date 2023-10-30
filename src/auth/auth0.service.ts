@@ -56,6 +56,7 @@ export class Auth0Service {
   ): Promise<{
     user: SocialUserLogin;
     accessToken: string;
+    accessTokenExpiresIn: number;
   }> {
     const { issuerUrl, callbackUrl, clientId, audience } =
       this.configurationService.get('auth0');
@@ -107,6 +108,7 @@ export class Auth0Service {
           givenName: user.given_name,
         },
         accessToken: data.access_token,
+        accessTokenExpiresIn: data.expires_in,
       };
     } catch (e) {
       throw new UnauthorizedException({

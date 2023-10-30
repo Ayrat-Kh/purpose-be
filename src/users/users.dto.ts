@@ -19,6 +19,7 @@ export type SocialUserLogin = Pick<
 export type AuthorizeRequest = Request & {
   user: SocialUserLogin;
   accessToken: string;
+  accessTokenExpiresIn: number;
 };
 
 const UpdateUserSchema = z.object({

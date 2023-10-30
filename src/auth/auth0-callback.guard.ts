@@ -24,13 +24,15 @@ export class Auth0CallbackGuard implements CanActivate {
     }
 
     try {
-      const { accessToken, user } = await this.auth0Service.authenticate(
-        request.query.code as string,
-        request.signedCookies[CODE_VERIFIER_KEY],
-      );
+      const { accessTokenExpiresIn, accessToken, user } =
+        await this.auth0Service.authenticate(
+          request.query.code as string,
+          request.signedCookies[CODE_VERIFIER_KEY],
+        );
 
       request.user = user;
       request.accessToken = accessToken;
+      request.accessTokenExpiresIn = accessTokenExpiresIn;
 
       return true;
     } catch (e) {

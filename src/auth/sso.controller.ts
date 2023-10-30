@@ -7,7 +7,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 import { ApiFoundResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
 import { UsersService } from 'src/users/users.service';
@@ -87,6 +87,11 @@ export class SsoController {
 
     const url = new URL(returnTo || 'http://localhost:3000');
     url.searchParams.append('access_token', request.accessToken);
+
+    response.cookie('is-authorized', 'true', {
+      maxAge: request.accessTokenExpiresIn * 1000,
+      httpOnly: false,
+    });
 
     return response.redirect(url.toString());
   }
