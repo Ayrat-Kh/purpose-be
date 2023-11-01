@@ -11,18 +11,14 @@ datasource db {
 }
 
 model User {
-  id               String        @id @db.VarChar(70)
-  createdAt        DateTime      @default(now())
-  email            String        @db.VarChar(50)
-  givenName        String        @db.VarChar(50)
-  familyName       String        @db.VarChar(50)
-  phoneNumber      String        @db.VarChar(20)
-  hobby            String        @db.VarChar(300)
-  dreamJob         String        @db.VarChar(300)
-  fearInLife       String        @db.VarChar(300)
-  professionSkills String        @db.VarChar(300)
-  UserPrompts      UserPrompts[]
-  status           UserStatus
+  id          String        @id @db.VarChar(70)
+  createdAt   DateTime      @default(now())
+  email       String        @db.VarChar(50)
+  givenName   String        @db.VarChar(50)
+  familyName  String        @db.VarChar(50)
+  phoneNumber String        @db.VarChar(20)
+  UserPrompts UserPrompts[]
+  status      UserStatus
 
   @@index([email], type: Hash)
 }
@@ -35,7 +31,7 @@ enum UserStatus {
 model UserPrompts {
   id        String   @id @default(uuid()) @db.Uuid
   createdAt DateTime @default(now())
-  prompt    String   @db.VarChar(16000)
+  request   Json     @db.JsonB
   statement String   @db.VarChar(16000)
   fear      String   @db.VarChar(8000)
   love      String   @db.VarChar(8000)

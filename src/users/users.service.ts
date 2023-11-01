@@ -26,10 +26,6 @@ export class UsersService {
     return await this.dbClient.user.create({
       data: {
         status: 'CREATED',
-        hobby: '',
-        dreamJob: '',
-        fearInLife: '',
-        professionSkills: '',
         email: user.email ?? '',
         givenName: user.givenName ?? '',
         phoneNumber: '',

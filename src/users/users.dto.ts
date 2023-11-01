@@ -113,24 +113,4 @@ export class UserResponseDto implements User {
     example: '9537775544',
   })
   phoneNumber: string;
-
-  @ApiProperty({
-    deprecated: true,
-  })
-  hobby: string;
-
-  @ApiProperty({
-    deprecated: true,
-  })
-  dreamJob: string;
-
-  @ApiProperty({
-    deprecated: true,
-  })
-  fearInLife: string;
-
-  @ApiProperty({
-    deprecated: true,
-  })
-  professionSkills: string;
 }

@@ -88,7 +88,7 @@ export class SentencesController {
       sentenceId,
     });
 
-    if (result) {
+    if (!result) {
       throw new NotFoundException('Sentence not found');
     }
 

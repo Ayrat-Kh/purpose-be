@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { User } from '@prisma/client';
+import type { Prisma, User } from '@prisma/client';
 
 import { OpenAiClient } from 'src/providers/open-ai-client';
 import { DbClient } from 'src/providers/db-client';
@@ -27,7 +27,7 @@ export class SentencesService {
     const requestContent = getSentence(p);
 
     const response = await this.openAiClient.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       temperature: 0.4,
       messages: [
         {
@@ -53,21 +53,23 @@ export class SentencesService {
       this.logger.error("Couldn't parse response", content);
     }
 
-    return await this.dbClient.userPrompts.create({
+    const result = await this.dbClient.userPrompts.create({
       data: {
-        prompt: requestContent,
         sessionId: response.id,
         userId: user.id,
         ...(parsedResponse ?? EMPTY_STATEMENT_RESPONSE),
+        request: p as Prisma.JsonObject,
       },
     });
+
+    return result as UserSentenceDto;
   }
 
   public async getUserSentence({
     sentenceId,
     user,
   }: GetUserSentenceParams): Promise<UserSentenceDto | null> {
-    return await this.dbClient.userPrompts.findFirst({
+    const result = await this.dbClient.userPrompts.findFirst({
       where:
         sentenceId === 'latest'
           ? {
@@ -82,6 +84,8 @@ export class SentencesService {
       },
       take: 1,
     });
+
+    return result as UserSentenceDto | null;
   }
 
   public async getUserSentences({
@@ -89,7 +93,7 @@ export class SentencesService {
     page = 1,
     user,
   }: GetUserSentencesParams): Promise<UserSentenceDto[]> {
-    return await this.dbClient.userPrompts.findMany({
+    const result = await this.dbClient.userPrompts.findMany({
       where: {
         userId: user.id,
       },
@@ -99,6 +103,8 @@ export class SentencesService {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+
+    return result as UserSentenceDto[];
   }
 
   public async getUserSentencesCount({

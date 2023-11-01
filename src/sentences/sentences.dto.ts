@@ -1,7 +1,7 @@
 import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
 import { ApiProperty } from '@nestjs/swagger';
-import { User, UserPrompts } from '@prisma/client';
+import type { Prisma, User, UserPrompts } from '@prisma/client';
 
 const SentenceSchema = z.object({
   fear: z.string().optional().describe('Fear in life description'),
@@ -11,19 +11,6 @@ const SentenceSchema = z.object({
 });
 
 export class SentenceDto extends createZodDto(SentenceSchema) {}
-
-const CreateSentenceDtoSchema = z.object({
-  content: z.string().nonempty().describe('Prompt content'),
-  temperature: z
-    .number()
-    .min(0)
-    .max(2)
-    .default(0.4)
-    .describe('Value between 0 and 2. Value towards 2 gives more random result')
-    .optional(),
-});
-
-export class CreateSentenceDto extends createZodDto(CreateSentenceDtoSchema) {}
 
 export class UserSentenceDto implements UserPrompts {
   @ApiProperty({ description: 'Open AI response overall response' })
@@ -55,6 +42,9 @@ export class UserSentenceDto implements UserPrompts {
 
   @ApiProperty({ description: 'Open AI conversation Id' })
   sessionId: string;
+
+  @ApiProperty({ description: 'Request object', type: SentenceDto })
+  request: Prisma.JsonValue;
 }
 
 export class UserSentencesListResponseMeta {
