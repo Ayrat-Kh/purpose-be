@@ -133,9 +133,4 @@ export class UserResponseDto implements User {
     deprecated: true,
   })
   professionSkills: string;
-
-  @ApiProperty({
-    type: String,
-  })
-  lastSentenceId: string | null;
 }

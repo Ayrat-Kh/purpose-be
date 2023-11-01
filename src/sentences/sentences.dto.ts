@@ -86,7 +86,11 @@ export class UserSentencesListResponse {
 
 export interface GetUserSentencesParams {
   user: Pick<User, 'id'>;
-  sentenceId?: string | undefined;
   page?: number;
   pageSize?: number;
+}
+
+export interface GetUserSentenceParams {
+  user: Pick<User, 'id'>;
+  sentenceId: 'latest' | (string & object);
 }

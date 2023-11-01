@@ -7,6 +7,7 @@ import type {
   GetUserSentencesParams,
   UserSentenceDto,
   SentenceDto,
+  GetUserSentenceParams,
 } from './sentences.dto';
 import { getSentence } from './sentences.constants';
 
@@ -62,14 +63,36 @@ export class SentencesService {
     });
   }
 
+  public async getUserSentence({
+    sentenceId,
+    user,
+  }: GetUserSentenceParams): Promise<UserSentenceDto | null> {
+    return await this.dbClient.userPrompts.findFirst({
+      where:
+        sentenceId === 'latest'
+          ? {
+              userId: user.id,
+            }
+          : {
+              userId: user.id,
+              id: sentenceId,
+            },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 1,
+    });
+  }
+
   public async getUserSentences({
     pageSize = 4,
     page = 1,
-    sentenceId,
     user,
   }: GetUserSentencesParams): Promise<UserSentenceDto[]> {
     return await this.dbClient.userPrompts.findMany({
-      where: this.getListQuery({ user, sentenceId }),
+      where: {
+        userId: user.id,
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -79,28 +102,13 @@ export class SentencesService {
   }
 
   public async getUserSentencesCount({
-    sentenceId,
     user,
-  }: Pick<GetUserSentencesParams, 'user' | 'sentenceId'>): Promise<number> {
+  }: Pick<GetUserSentencesParams, 'user'>): Promise<number> {
     return await this.dbClient.userPrompts.count({
-      where: this.getListQuery({ user, sentenceId }),
+      where: {
+        userId: user.id,
+      },
     });
-  }
-
-  private getListQuery({
-    user,
-    sentenceId,
-  }: Pick<GetUserSentencesParams, 'sentenceId' | 'user'>) {
-    return {
-      userId: user.id,
-      ...(sentenceId
-        ? {
-            AND: {
-              id: sentenceId,
-            },
-          }
-        : {}),
-    };
   }
 
   private getStatementResponse(

@@ -11,7 +11,6 @@ import { type User } from '@prisma/client';
 import { mock, mockDeep } from 'jest-mock-extended';
 import { PatchUserDto, SocialUserLogin, UpdateUserDto } from './users.dto';
 import { CacheService } from 'src/providers/cache-service';
-import { SentencesService } from 'src/sentences/sentences.service';
 
 let dbMockCtx: DbMockContext;
 
@@ -21,15 +20,14 @@ beforeEach(async () => {
   dbMockCtx = createDbMockContext();
 
   const module: TestingModule = await Test.createTestingModule({
-    providers: [UsersService, DbClient, CacheService, SentencesService],
+    providers: [UsersService, DbClient, CacheService],
     imports: [ConfigurationModule],
   })
     .overrideProvider(DbClient)
     .useValue(dbMockCtx.prisma)
     .overrideProvider(CacheService)
     .useValue(mockDeep())
-    .overrideProvider(SentencesService)
-    .useValue(mockDeep())
+
     .compile();
 
   service = module.get<UsersService>(UsersService);
@@ -52,9 +50,7 @@ describe('UsersService', () => {
 
     dbMockCtx.prismaMock.user.create.mockResolvedValue(response);
 
-    await expect(service.upsertUser(userInfo)).resolves.toEqual(
-      expect.objectContaining(response),
-    );
+    await expect(service.upsertUser(userInfo)).resolves.toEqual(response);
   });
 
   it('should update user', async () => {
@@ -74,7 +70,7 @@ describe('UsersService', () => {
     dbMockCtx.prismaMock.user.update.mockResolvedValue(response);
 
     await expect(service.updateUserData('', userInfo)).resolves.toEqual(
-      expect.objectContaining(response),
+      response,
     );
   });
 
@@ -96,7 +92,7 @@ describe('UsersService', () => {
     dbMockCtx.prismaMock.user.update.mockResolvedValue(response);
 
     await expect(service.patchUserData('', userInfo)).resolves.toEqual(
-      expect.objectContaining(response),
+      response,
     );
   });
 
@@ -118,7 +114,7 @@ describe('UsersService', () => {
     dbMockCtx.prismaMock.user.update.mockResolvedValue(response);
 
     await expect(service.patchUserData('', userInfo)).resolves.toEqual(
-      expect.objectContaining(response),
+      response,
     );
   });
 
@@ -127,8 +123,6 @@ describe('UsersService', () => {
 
     dbMockCtx.prismaMock.user.findFirst.mockResolvedValue(response);
 
-    await expect(service.getUserById('')).resolves.toEqual(
-      expect.objectContaining(response),
-    );
+    await expect(service.getUserById('')).resolves.toEqual(response);
   });
 });

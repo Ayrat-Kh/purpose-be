@@ -79,26 +79,26 @@ export class SentencesController {
   @Get('/:sentenceId')
   async getSentence(
     @Req() request: AuthorizedRequest,
-    @Param('sentenceId') sentenceId: string,
+    @Param('sentenceId') sentenceId: 'latest' | (string & object),
   ) {
-    const result = await this.sentencesService.getUserSentences({
+    const result = await this.sentencesService.getUserSentence({
       user: {
         id: request.user.sub,
       },
       sentenceId,
     });
 
-    if (!result?.[0]) {
+    if (result) {
       throw new NotFoundException('Sentence not found');
     }
 
-    return result[0];
+    return result;
   }
 
   @Post()
   @HttpCode(HttpStatus.NO_CONTENT)
   @UsePipes(ZodValidationPipe)
-  async createSentense(
+  async createSentence(
     @Req() request: AuthorizedRequest,
     @Body() sentences: SentenceDto,
   ) {

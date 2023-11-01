@@ -8,14 +8,12 @@ import {
   type UpdateUserDto,
 } from './users.dto';
 import { CacheService } from 'src/providers/cache-service';
-import { SentencesService } from 'src/sentences/sentences.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly dbClient: DbClient,
     private readonly cacheService: CacheService,
-    private readonly sentencesService: SentencesService,
   ) {}
 
   async upsertUser(user: SocialUserLogin): Promise<UserResponseDto> {
@@ -25,23 +23,20 @@ export class UsersService {
       return dbUser;
     }
 
-    return {
-      ...(await this.dbClient.user.create({
-        data: {
-          status: 'CREATED',
-          hobby: '',
-          dreamJob: '',
-          fearInLife: '',
-          professionSkills: '',
-          email: user.email ?? '',
-          givenName: user.givenName ?? '',
-          phoneNumber: '',
-          familyName: user.familyName ?? '',
-          id: user.id,
-        },
-      })),
-      lastSentenceId: null,
-    };
+    return await this.dbClient.user.create({
+      data: {
+        status: 'CREATED',
+        hobby: '',
+        dreamJob: '',
+        fearInLife: '',
+        professionSkills: '',
+        email: user.email ?? '',
+        givenName: user.givenName ?? '',
+        phoneNumber: '',
+        familyName: user.familyName ?? '',
+        id: user.id,
+      },
+    });
   }
 
   async updateUserData(
@@ -57,10 +52,7 @@ export class UsersService {
 
     await this.cacheService.dropUser(id);
 
-    return {
-      ...result,
-      ...(await this.getLatestSentence(id)),
-    };
+    return result;
   }
 
   async patchUserData(
@@ -76,10 +68,7 @@ export class UsersService {
 
     await this.cacheService.dropUser(id);
 
-    return {
-      ...result,
-      ...(await this.getLatestSentence(id)),
-    };
+    return result;
   }
 
   async getUserById(id: string): Promise<UserResponseDto | null> {
@@ -91,26 +80,6 @@ export class UsersService {
       },
     });
 
-    return result
-      ? {
-          ...result,
-          ...(await this.getLatestSentence(id)),
-        }
-      : null;
-  }
-
-  private async getLatestSentence(userId: string): Promise<{
-    lastSentenceId: string | null;
-  }> {
-    const result = await this.sentencesService.getUserSentences({
-      user: {
-        id: userId,
-      },
-      pageSize: 1,
-    });
-
-    return {
-      lastSentenceId: result?.[0]?.id ?? null,
-    };
+    return result;
   }
 }
