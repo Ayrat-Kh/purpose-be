@@ -61,7 +61,7 @@ describe('SentencesService', () => {
 
     const userSentence: UserPrompts = {
       id: 'id',
-      prompt: 'prompt',
+      request: {},
       ambition: '',
       fear: '',
       love: '',
@@ -92,7 +92,7 @@ describe('SentencesService', () => {
   it('should return list prompts', async () => {
     const userSentence: UserPrompts = {
       id: 'id',
-      prompt: 'prompt',
+      request: {},
       sessionId: 'sessionId',
       userId: 'userId',
       createdAt: new Date(),
