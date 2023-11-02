@@ -22,9 +22,11 @@ export class SentencesListener {
       this.logger.verbose(
         `[${SentencesEvents.CREATE_SENTENCE}]: Prompting for ${user.email}`,
       );
-      const response = await this.sentencesService.promptSentence(sentence, {
-        id: user.id,
-      });
+      const response = await this.sentencesService.promptSentence(
+        payload.sentenceId,
+        sentence,
+        user,
+      );
 
       this.logger.verbose(
         `[${SentencesEvents.CREATE_SENTENCE}]: Sending email for ${user.email}`,

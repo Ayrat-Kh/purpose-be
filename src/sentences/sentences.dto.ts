@@ -1,7 +1,7 @@
 import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
 import { ApiProperty } from '@nestjs/swagger';
-import type { Prisma, User, UserPrompts } from '@prisma/client';
+import { $Enums, Prisma, User, UserPrompts } from '@prisma/client';
 
 const SentenceSchema = z.object({
   fear: z.string().optional().describe('Fear in life description'),
@@ -13,6 +13,12 @@ const SentenceSchema = z.object({
 export class SentenceDto extends createZodDto(SentenceSchema) {}
 
 export class UserSentenceDto implements UserPrompts {
+  @ApiProperty({
+    description: 'Prompt execution status',
+    enum: [$Enums.PromptStatus.CREATED, $Enums.PromptStatus.EXECUTED],
+  })
+  status: $Enums.PromptStatus;
+
   @ApiProperty({ description: 'Open AI response overall response' })
   statement: string;
 

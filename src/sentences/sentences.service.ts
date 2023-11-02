@@ -20,7 +20,29 @@ export class SentencesService {
     private readonly dbClient: DbClient,
   ) {}
 
+  public async createSentence(
+    p: SentenceDto,
+    user: Pick<User, 'id'>,
+  ): Promise<UserSentenceDto> {
+    const result = await this.dbClient.userPrompts.create({
+      data: {
+        status: 'CREATED',
+        userId: user.id,
+        request: p as Prisma.JsonObject,
+        sessionId: '',
+        ambition: '',
+        fear: '',
+        love: '',
+        statement: '',
+        talent: '',
+      },
+    });
+
+    return result as UserSentenceDto;
+  }
+
   public async promptSentence(
+    sentenceId: string,
     p: SentenceDto,
     user: Pick<User, 'id'>,
   ): Promise<UserSentenceDto> {
@@ -53,12 +75,14 @@ export class SentencesService {
       this.logger.error("Couldn't parse response", content);
     }
 
-    const result = await this.dbClient.userPrompts.create({
+    const result = await this.dbClient.userPrompts.update({
+      where: {
+        id: sentenceId,
+      },
       data: {
+        status: 'EXECUTED',
         sessionId: response.id,
-        userId: user.id,
         ...(parsedResponse ?? EMPTY_STATEMENT_RESPONSE),
-        request: p as Prisma.JsonObject,
       },
     });
 
@@ -96,6 +120,7 @@ export class SentencesService {
     const result = await this.dbClient.userPrompts.findMany({
       where: {
         userId: user.id,
+        status: 'EXECUTED',
       },
       orderBy: {
         createdAt: 'desc',

@@ -7,6 +7,7 @@ export const SentencesEvents = {
 
 export class CreateSentenceEvent {
   constructor(
+    public readonly sentenceId: string,
     public readonly sentence: SentenceDto,
     public readonly user: Pick<User, 'id' | 'email'>,
   ) {}

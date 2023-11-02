@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
   NotFoundException,
   Param,
   Post,
@@ -96,13 +94,18 @@ export class SentencesController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({
+    type: UserSentenceDto,
+  })
   @UsePipes(ZodValidationPipe)
   async createSentence(
     @Req() request: AuthorizedRequest,
     @Body() sentences: SentenceDto,
   ) {
     const user = await this.userService.getUserById(request.user.sub);
+    const statement = await this.sentencesService.createSentence(sentences, {
+      id: request.user.sub,
+    });
 
     if (!user) {
       throw new NotFoundException(
@@ -112,7 +115,9 @@ export class SentencesController {
 
     this.eventEmitter.emit(
       SentencesEvents.CREATE_SENTENCE,
-      new CreateSentenceEvent(sentences, user),
+      new CreateSentenceEvent(statement.id, sentences, user),
     );
+
+    return statement;
   }
 }
