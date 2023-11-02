@@ -4,10 +4,22 @@ import { ApiProperty } from '@nestjs/swagger';
 import { $Enums, Prisma, User, UserPrompts } from '@prisma/client';
 
 const SentenceSchema = z.object({
-  fear: z.string().optional().describe('Fear in life description'),
-  love: z.string().optional().describe('Love in life'),
-  talent: z.string().optional().describe('Profession skills description'),
-  ambition: z.string().optional().describe('Dream description'),
+  fear: z
+    .array(z.string())
+    .or(z.null())
+    .catch([])
+    .describe('Fear in life description'),
+  love: z.array(z.string()).or(z.null()).catch([]).describe('Love in life'),
+  talent: z
+    .array(z.string())
+    .or(z.null())
+    .catch([])
+    .describe('Profession skills description'),
+  ambition: z
+    .array(z.string())
+    .or(z.null())
+    .catch([])
+    .describe('Dream description'),
 });
 
 export class SentenceDto extends createZodDto(SentenceSchema) {}

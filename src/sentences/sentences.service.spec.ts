@@ -70,17 +70,19 @@ describe('SentencesService', () => {
       sessionId: 'sessionId',
       userId: 'userId',
       createdAt: new Date(),
+      status: 'CREATED',
     };
 
-    dbMockCtx.prismaMock.userPrompts.create.mockResolvedValue(userSentence);
+    dbMockCtx.prismaMock.userPrompts.update.mockResolvedValue(userSentence);
 
     await expect(
       service.promptSentence(
+        '',
         {
-          ambition: 'ambition',
-          fear: 'fear',
-          love: 'love',
-          talent: 'talent',
+          ambition: ['ambition'],
+          fear: ['fear'],
+          love: ['love'],
+          talent: ['talent'],
         },
         {
           id: 'sub',
@@ -101,6 +103,7 @@ describe('SentencesService', () => {
       statement: '',
       talent: '',
       ambition: '',
+      status: 'CREATED',
     };
 
     dbMockCtx.prismaMock.userPrompts.findMany.mockResolvedValue([userSentence]);

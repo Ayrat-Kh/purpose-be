@@ -28,7 +28,7 @@ export class SentencesService {
       data: {
         status: 'CREATED',
         userId: user.id,
-        request: p as Prisma.JsonObject,
+        request: p as unknown as Prisma.InputJsonValue,
         sessionId: '',
         ambition: '',
         fear: '',
