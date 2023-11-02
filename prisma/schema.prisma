@@ -42,6 +42,7 @@ model UserPrompts {
   sessionId String       @db.VarChar(50)
   status    PromptStatus
 
+  @@index([status], type: Hash)
   @@index([sessionId], type: Hash)
   @@index([createdAt], type: BTree)
 }
