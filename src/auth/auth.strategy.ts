@@ -6,8 +6,9 @@ import { Observable } from 'rxjs';
 import { passportJwtSecret } from 'jwks-rsa';
 
 import { ConfigurationService } from 'src/configuration/configuration.service';
-import { normalizeIssuerUrl } from './auth.utils';
+
 import { AccessTokenPayload } from './auth.dto';
+import { normalizeIssuerUrl } from './auth.utils';
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy) {
@@ -26,7 +27,7 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       algorithms: ['RS256'],
       issuer: normalizeIssuerUrl(issuerUrl),
-      audience,
+      audience: normalizeIssuerUrl(audience),
     });
   }
 

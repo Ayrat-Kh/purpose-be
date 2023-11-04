@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -11,6 +12,8 @@ import { CODE_VERIFIER_KEY } from './auth.constants';
 
 @Injectable()
 export class Auth0CallbackGuard implements CanActivate {
+  logger = new Logger('Auth0CallbackGuard');
+
   constructor(readonly auth0Service: Auth0Service) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -36,6 +39,8 @@ export class Auth0CallbackGuard implements CanActivate {
 
       return true;
     } catch (e) {
+      this.logger.error(e.response.data);
+
       return false;
     }
   }
