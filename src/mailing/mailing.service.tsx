@@ -28,7 +28,7 @@ export class MailingService {
 
     await this.resend.sendEmail({
       from,
-      subject: 'Welcome',
+      subject: 'Science Of Abundance - Mailling',
       to,
       react: (
         <SentenceAnswers

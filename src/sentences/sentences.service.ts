@@ -49,7 +49,7 @@ export class SentencesService {
     const requestContent = getSentence(p);
 
     const response = await this.openAiClient.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4',
       temperature: 0.4,
       messages: [
         {
