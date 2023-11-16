@@ -98,8 +98,10 @@ export class SentencesService {
         sentenceId === 'latest'
           ? {
               userId: user.id,
+              status: 'EXECUTED',
             }
           : {
+              status: 'EXECUTED',
               userId: user.id,
               id: sentenceId,
             },
