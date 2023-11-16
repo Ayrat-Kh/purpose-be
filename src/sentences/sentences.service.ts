@@ -104,6 +104,7 @@ export class SentencesService {
               status: 'EXECUTED',
               userId: user.id,
               id: sentenceId,
+              status: 'EXECUTED',
             },
       orderBy: {
         createdAt: 'desc',
