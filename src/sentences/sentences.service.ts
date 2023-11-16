@@ -101,7 +101,6 @@ export class SentencesService {
               status: 'EXECUTED',
             }
           : {
-              status: 'EXECUTED',
               userId: user.id,
               id: sentenceId,
               status: 'EXECUTED',
