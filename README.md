@@ -1,34 +1,68 @@
-### Linkedin configuration
+# About the project
+This is a backend that helps summarize your dreams, fears, skills in a couple of sentences accelerated by open ai.
 
-1. Go to https://www.linkedin.com/developers/apps and create a new app.
-2. Go to the created app and open Products tab and Request access for: `Sign In with LinkedIn using OpenID Connect`
-3. Go to the created app and open Auth tab, copy `Client ID` and `Client Secret`, and configure `Authorized redirect URLs for your app` - tt should direct to `<BACKEND DOMAIN>/sso/linkedin/callback`.
-4. Configure env:
+# How to run
+Docker and make should be preinstalled.
 
-`LINKEDIN_CLIENT_ID`=`Client ID`
-`LINKEDIN_CLIENT_SECRET`=`Client Secret`
-`LINKEDIN_CLIENT_CALLBACK_URL`=`Authorized redirect URLs for your app`
+## Preconfigure environment variables
 
-### Google configuration
 
-1. Go to https://console.cloud.google.com/apis/credentials/oauthclient and create a new oauth credential.
-2. Go to the created app and open Products tab and Request access for: `Sign In with LinkedIn using OpenID Connect`
-3. Copy `Client ID` and `Client Secret`, and configure `Authorized redirect URLs for your app` - tt should direct to `<BACKEND DOMAIN>/sso/google/callback`.
-4. Configure env:
+```
+cp .env.example .env
+```
 
-`GOOGLE_CLIENT_ID`=`Client ID`
-`GOOGLE_CLIENT_SECRET`=`Client Secret`
-`GOOGLE_CLIENT_CALLBACK_URL`=`Authorized redirect URLs for your app`
+Replace in .env values according to the instructions below.
 
-Facebook Google configuration
+Create auth0 application and auth and replace values below
 
-1. Go to https://developers.facebook.com/apps/ and create a new oauth credential.
-2. Go to Use cases and add email,public_profile as an permission
-3. Go to Products, click Configure and set `Valid OAuth Redirect URIs`
-4. Go to basic settings and copy `App Id` and `App secret`
-5. Copy `Client ID` and `Client Secret`, and configure `Authorized redirect URLs for your app` - tt should direct to `<BACKEND DOMAIN>/sso/google/callback`.
-6. Configure env:
+```
+AUTH0_AUDIENCE=
+AUTH0_ISSUER_URL=
+AUTH0_CLIENT_ID=
+```
 
-`FACEBOOK_CLIENT_ID`=`App Id`
-`FACEBOOK_CLIENT_SECRET`=`App secret`
-`FACEBOOK_CLIENT_CALLBACK_URL`=`Valid OAuth Redirect URIs`
+Can be left as is unless the app is running in another domain.
+```
+AUTH0_CALLBACK_URL=http://localhost:3000/sso/auth0/callback
+```
+
+Put any random key for signing cookies
+```
+AUTH0_COOKIE_SIGN_KEY=
+```
+
+Can be left as is unless default config is changed
+```
+DATABASE_URL="postgresql://test_db:test_db@localhost:5432/test_db"
+```
+
+Set [open AI](https://openai.com) key
+```
+OPENAI_API_KEY=
+```
+
+Can be left as is unless frontend or backend domains are changed.
+```
+FRONTEND_URL=http://localhost:3001
+BACKEND_URL=http://localhost:3000
+```
+
+Set keys from [resend.com](https://resend.com/)
+```
+EMAIL_RESEND_KEY=
+EMAIL_FROM=no-reply@test.com
+```
+
+Finally run the app
+
+```
+1. pnpm install
+2. pnpm prisma generate
+3. make init-db
+4. pnpm run start:dev
+```
+
+# Run tests
+```
+pnpm run test
+```

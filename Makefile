@@ -12,9 +12,9 @@ init-db:
 		--network host \
 		--name purpose_db \
 		-p 5432:5432 \
-		-e POSTGRES_PASSWORD=purpose_db \
-		-e POSTGRES_USER=purpose_db \
-		-e POSTGRES_DB=purpose_db \
+		-e POSTGRES_PASSWORD=test_db \
+		-e POSTGRES_USER=test_db \
+		-e POSTGRES_DB=test_db \
 		-d \
 		postgres \
 		-c shared_buffers=256MB \
